@@ -48,7 +48,7 @@ namespace Code
                 Exit();
 
             // TODO: Add your update logic here
-            astronaut.Update();
+            astronaut.Update(gameTime);
 
             base.Update(gameTime);
         }
