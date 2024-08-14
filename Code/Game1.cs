@@ -9,7 +9,7 @@ namespace Code
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private Texture2D texture;
+        private Texture2D playerSprite;
         Astronaut astronaut;
 
         public Game1()
@@ -31,7 +31,7 @@ namespace Code
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
 
-            texture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
+            playerSprite = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
 
             InitializeGameObjects();
             // TODO: use this.Content to load your game content here
@@ -39,7 +39,7 @@ namespace Code
 
         private void InitializeGameObjects()
         {
-            astronaut = new Astronaut(texture);
+            astronaut = new Astronaut(playerSprite);
         }
 
         protected override void Update(GameTime gameTime)
