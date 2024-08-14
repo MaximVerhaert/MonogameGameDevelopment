@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Code.Input;
+using Code.Interfaces;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,7 +12,7 @@ namespace Code
         private SpriteBatch _spriteBatch;
 
         private Texture2D playerSprite;
-        Astronaut astronaut;
+        private Astronaut astronaut;
 
         public Game1()
         {
@@ -39,7 +41,13 @@ namespace Code
 
         private void InitializeGameObjects()
         {
-            astronaut = new Astronaut(playerSprite);
+            IMovementController movementController = new MovementController(
+                initialSpeed: new Vector2(1, 1),
+                initialAcceleration: new Vector2(1f, 1f),
+                maxAcceleration: 5f
+            );
+
+            astronaut = new Astronaut(playerSprite, new KeyBoardReader(), movementController);
         }
 
         protected override void Update(GameTime gameTime)
