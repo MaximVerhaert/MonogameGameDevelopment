@@ -1,37 +1,61 @@
-﻿using Code.Interfaces;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
 using Code.Animation;
-using Microsoft.Xna.Framework.Input;
 using Code.Input;
-
-
+using Code.Interfaces;
+using System.Collections.Generic;
 
 namespace Code
 {
-    public class Astronaut:IGameObject
+    public class Astronaut : IGameObject
     {
-        Texture2D astronautTexture;
+        private Texture2D idleTexture;
+        private Texture2D runningTexture;
+
+        private Texture2D currentTexture;
         private Animatie animatie;
         private Vector2 position;
         private IMovementController movementController;
         private IInputReader inputReader;
 
-        public Astronaut(Texture2D texture, IInputReader reader, IMovementController movementController){
-            astronautTexture = texture;
+        public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController)
+        {
+            this.idleTexture = idleTexture;
+            this.runningTexture = runningTexture;
+
             animatie = new Animatie();
-            animatie.AddFrame(new AnimationFrame(new Rectangle(0, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(64, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(128, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(192, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(256, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(320, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(384, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(448, 0, 64, 64)));
-            animatie.AddFrame(new AnimationFrame(new Rectangle(512, 0, 64, 64)));
+
+            animatie.AddAnimation("Idle", new List<AnimationFrame>
+            {
+                new AnimationFrame(new Rectangle(0, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(64, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(128, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(192, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(256, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(320, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(384, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(448, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(512, 0, 64, 64))
+            });
+
+            animatie.AddAnimation("Running", new List<AnimationFrame>
+            {
+                new AnimationFrame(new Rectangle(0, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(64, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(128, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(192, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(256, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(320, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(384, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(448, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(512, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(576, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(640, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(704, 0, 64, 64))
+            });
+
+            animatie.Play("Idle");
+            currentTexture = idleTexture;
 
             position = new Vector2(10, 10);
             this.movementController = movementController;
@@ -48,12 +72,23 @@ namespace Code
         {
             var direction = inputReader.ReadInput();
             var movement = movementController.UpdateMovement(direction, gameTime);
-            position += movement;
+            position += movement;;
+
+            if (direction == Vector2.Zero)
+            {
+                animatie.Play("Idle");
+                currentTexture = idleTexture;
+            }
+            else
+            {
+                animatie.Play("Running");
+                currentTexture = runningTexture;
+            }
         }
 
         public void Draw(SpriteBatch _spriteBatch)
         {
-            _spriteBatch.Draw(astronautTexture, position, animatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0,0), 0.5f, SpriteEffects.None,0);
+            _spriteBatch.Draw(currentTexture, position, animatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
         }
     }
 }

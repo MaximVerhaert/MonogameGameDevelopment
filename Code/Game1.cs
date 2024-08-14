@@ -32,14 +32,13 @@ namespace Code
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
+            Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
 
-            playerSprite = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
-
-            InitializeGameObjects();
-            // TODO: use this.Content to load your game content here
+            InitializeGameObjects(idleTexture, runningTexture);
         }
 
-        private void InitializeGameObjects()
+        private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
             IMovementController movementController = new MovementController(
                 initialSpeed: new Vector2(1, 1),
@@ -47,8 +46,9 @@ namespace Code
                 maxAcceleration: 5f
             );
 
-            astronaut = new Astronaut(playerSprite, new KeyBoardReader(), movementController);
+            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController);
         }
+
 
         protected override void Update(GameTime gameTime)
         {

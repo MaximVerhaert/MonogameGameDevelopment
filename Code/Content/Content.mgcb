@@ -25,3 +25,15 @@
 /processorParam:TextureFormat=Color
 /build:AstronautIdle(64x64)x9.png
 
+#begin AstronautRunning(64x64)x12.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:AstronautRunning(64x64)x12.png
+
