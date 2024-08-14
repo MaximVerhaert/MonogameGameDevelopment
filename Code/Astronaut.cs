@@ -4,6 +4,7 @@ using Code.Animation;
 using Code.Input;
 using Code.Interfaces;
 using System.Collections.Generic;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Code
 {
@@ -17,6 +18,8 @@ namespace Code
         private Vector2 position;
         private IMovementController movementController;
         private IInputReader inputReader;
+        private bool isFacingLeft = false;
+
 
         public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController)
         {
@@ -72,23 +75,45 @@ namespace Code
         {
             var direction = inputReader.ReadInput();
             var movement = movementController.UpdateMovement(direction, gameTime);
-            position += movement;;
+            position += movement;
 
             if (direction == Vector2.Zero)
             {
-                animatie.Play("Idle");
-                currentTexture = idleTexture;
+                SetAnimationState("Idle", idleTexture);
             }
             else
             {
-                animatie.Play("Running");
-                currentTexture = runningTexture;
+                SetAnimationState("Running", runningTexture);
+
+                // kijk richting aanpassen gebaseerd op beweging
+                isFacingLeft = direction.X < 0;
             }
+        }
+
+        private void SetAnimationState(string animationName, Texture2D texture)
+        {
+            animatie.Play(animationName);
+            currentTexture = texture;
         }
 
         public void Draw(SpriteBatch _spriteBatch)
         {
-            _spriteBatch.Draw(currentTexture, position, animatie.CurrentFrame.SourceRectangle, Color.White, 0, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0);
+            //verticaal sprite sheet flippen om richting aan te geven
+            SpriteEffects spriteEffect = isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+
+            _spriteBatch.Draw(
+                currentTexture,
+                position,
+                animatie.CurrentFrame.SourceRectangle,
+                Color.White,
+                0,
+                new Vector2(0, 0),
+                0.5f,
+                spriteEffect,
+                0
+            );
         }
+
     }
 }
