@@ -1,14 +1,13 @@
-﻿using Code.Code;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Code.Code;
 using Code.Input;
 using Code.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SharpDX.Direct3D9;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Code
 {
@@ -20,6 +19,7 @@ namespace Code
 
         private List<TileMap> layers;
         private Dictionary<string, Texture2D> textures;
+        private RenderTarget2D _mapRenderTarget;
 
         public Game1()
         {
@@ -31,15 +31,20 @@ namespace Code
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // Load textures
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
-            // Initialize game objects with textures and movement controller
+
+            // Initialize game objects
             InitializeGameObjects(idleTexture, runningTexture);
 
             textures = new Dictionary<string, Texture2D>();
 
+            // Load tile map layers
             layers = TileMap.LoadFromCsv("../../../Data/map.csv");
 
+            // Load and cache textures
             foreach (var layer in layers)
             {
                 if (!textures.ContainsKey(layer.TextureName))
@@ -50,8 +55,20 @@ namespace Code
                 var texture = textures[layer.TextureName];
                 layer.TextureStore = TileMap.GenerateTextureStore(texture, 64); // Adjust as needed
             }
-        }
 
+            // Create and render to RenderTarget2D
+            var viewport = GraphicsDevice.Viewport;
+            _mapRenderTarget = new RenderTarget2D(GraphicsDevice, viewport.Width, viewport.Height);
+
+            GraphicsDevice.SetRenderTarget(_mapRenderTarget);
+            GraphicsDevice.Clear(Color.Transparent);
+
+            _spriteBatch.Begin();
+            RenderStaticLayers();
+            _spriteBatch.End();
+
+            GraphicsDevice.SetRenderTarget(null); // Reset to default
+        }
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
@@ -64,8 +81,11 @@ namespace Code
             astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController);
         }
 
-        private void RenderLayers(List<TileMap> layers)
+        private void RenderStaticLayers()
         {
+            var viewport = GraphicsDevice.Viewport;
+            var visibleArea = new Rectangle(0, 0, viewport.Width, viewport.Height);
+
             foreach (var layer in layers.OrderBy(l => l.ZIndex))
             {
                 var texture = textures[layer.TextureName];
@@ -76,19 +96,19 @@ namespace Code
 
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                     {
-                        // Log or debug to see the problematic tile index and texture store size
-                        System.Diagnostics.Debug.WriteLine($"Invalid tile index: {tileIndex}. Total tiles: {layer.TextureStore.Count}");
-                        continue; // Skip this tile if the index is invalid
+                        continue;
                     }
 
                     Rectangle destination = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
-                    Rectangle source = layer.TextureStore[tileIndex];
 
-                    _spriteBatch.Draw(texture, destination, source, Color.White);
+                    if (destination.Intersects(visibleArea))
+                    {
+                        Rectangle source = layer.TextureStore[tileIndex];
+                        _spriteBatch.Draw(texture, destination, source, Color.White);
+                    }
                 }
             }
         }
-
 
         protected override void Update(GameTime gameTime)
         {
@@ -105,7 +125,9 @@ namespace Code
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
-            RenderLayers(layers);
+            // Draw cached map layers
+            _spriteBatch.Draw(_mapRenderTarget, Vector2.Zero, Color.White);
+            // Draw the astronaut
             astronaut.Draw(_spriteBatch);
             _spriteBatch.End();
 
