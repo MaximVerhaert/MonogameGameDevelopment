@@ -60,7 +60,7 @@ namespace Code
             animatie.Play("Idle");
             currentTexture = idleTexture;
 
-            position = new Vector2(0, 32);
+            position = new Vector2(64, 32+128);
             this.movementController = movementController;
             this.inputReader = reader;
         }
