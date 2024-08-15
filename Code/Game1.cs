@@ -21,6 +21,9 @@ namespace Code
         private Dictionary<string, Texture2D> textures;
         private RenderTarget2D _mapRenderTarget;
 
+        private Color _backgroundColor = Color.CornflowerBlue;
+        private bool _isCollidingWithFloor = false;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -110,6 +113,70 @@ namespace Code
             }
         }
 
+
+        private void CheckCollisionWithFloorLayer()
+        {
+            var astronautHitbox = astronaut.Hitbox;
+
+            _isCollidingWithFloor = false;
+
+            foreach (var layer in layers.Where(l => l.ZIndex == 3)) // Assuming the floor layer has ZIndex = 3
+            {
+                foreach (var item in layer.TileMapData)
+                {
+                    int tileIndex = item.Value - 1;
+                    if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
+                        continue;
+
+                    Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
+                    if (astronautHitbox.Intersects(tileBounds))
+                    {
+                        _isCollidingWithFloor = true;
+                        break;
+                    }
+                }
+
+                if (_isCollidingWithFloor)
+                    break;
+            }
+
+            _backgroundColor = _isCollidingWithFloor ? Color.Red : Color.Green;
+        }
+
+
+
+
+
+        private void DrawRectangleBorder(Rectangle rectangle, Color color, int borderThickness)
+        {
+            Texture2D pixel = CreateSinglePixelTexture(color);
+
+            // Draw the top border
+            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, borderThickness), color);
+
+            // Draw the bottom border
+            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height - borderThickness, rectangle.Width, borderThickness), color);
+
+            // Draw the left border
+            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y, borderThickness, rectangle.Height), color);
+
+            // Draw the right border
+            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X + rectangle.Width - borderThickness, rectangle.Y, borderThickness, rectangle.Height), color);
+        }
+
+        private Texture2D CreateSinglePixelTexture(Color color)
+        {
+            Texture2D texture = new Texture2D(GraphicsDevice, 1, 1);
+            texture.SetData(new[] { color });
+            return texture;
+        }
+
+
+
+
+
+
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -117,21 +184,32 @@ namespace Code
 
             astronaut.Update(gameTime);
 
+            CheckCollisionWithFloorLayer();
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(_backgroundColor);
 
             _spriteBatch.Begin();
+
             // Draw cached map layers
             _spriteBatch.Draw(_mapRenderTarget, Vector2.Zero, Color.White);
+
             // Draw the astronaut
             astronaut.Draw(_spriteBatch);
+
+            // Draw the hitbox border
+            DrawRectangleBorder(astronaut.Hitbox, Color.Red, 2); // Adjust thickness if needed
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+
+
     }
 }

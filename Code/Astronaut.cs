@@ -10,6 +10,41 @@ namespace Code
 {
     public class Astronaut : IGameObject
     {
+        public Vector2 Position => position;
+        private Rectangle idleHitbox = new Rectangle(4, 0, 21, 32);
+        private Rectangle runningHitbox = new Rectangle(6, 0, 24, 32);
+
+        public Rectangle Hitbox
+        {
+            get
+            {
+                // Determine the base hitbox and offset based on the current animation
+                Rectangle baseHitbox;
+                int xOffset;
+
+                if (animatie.CurrentAnimationName == "Running")
+                {
+                    baseHitbox = runningHitbox;
+                    // Define offsets for running animation
+                    xOffset = isFacingLeft ? -baseHitbox.Width + 22 : 0;
+                }
+                else
+                {
+                    baseHitbox = idleHitbox;
+                    // Define offsets for idle animation
+                    xOffset = isFacingLeft ? -baseHitbox.Width + 26 : 0;
+                }
+
+                return new Rectangle(
+                    (int)position.X + xOffset + baseHitbox.X,
+                    (int)position.Y + baseHitbox.Y,
+                    baseHitbox.Width,
+                    baseHitbox.Height
+                );
+            }
+        }
+
+
         private Texture2D idleTexture;
         private Texture2D runningTexture;
 
@@ -60,7 +95,7 @@ namespace Code
             animatie.Play("Idle");
             currentTexture = idleTexture;
 
-            position = new Vector2(64, 32+128);
+            position = new Vector2(64, 32+128+1);
             this.movementController = movementController;
             this.inputReader = reader;
         }

@@ -11,6 +11,9 @@ namespace Code.Animation
     {
         public AnimationFrame CurrentFrame { get; set; }
 
+        public string CurrentAnimationName { get; private set; } // Add this property
+
+
         private Dictionary<string, List<AnimationFrame>> animations;
 
         private List<AnimationFrame> currentAnimationFrames;
@@ -42,6 +45,7 @@ namespace Code.Animation
 
             // veranderen van de animatie
             currentAnimationFrames = animations[animationName];
+            CurrentAnimationName = animationName;
             counter = 0;
             frameMovement = 0;
             CurrentFrame = currentAnimationFrames[0];
