@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/maxim/Desktop/game/Code/Code/Content/AstronautRunning(64x64)x12.png</SourceFile>
-  <SourceTime>2024-08-13T12:50:34.2082933+02:00</SourceTime>
-  <DestFile>C:/Users/maxim/Desktop/game/Code/Code/Content/bin/Windows/AstronautRunning(64x64)x12.xnb</DestFile>
-  <DestTime>2024-08-15T12:46:49.7683989+02:00</DestTime>
+  <SourceFile>C:/Users/maxim/Desktop/game/Code/Code/Content/DeployableForeground(64x64)x2.png</SourceFile>
+  <SourceTime>2024-08-13T12:50:33.8743989+02:00</SourceTime>
+  <DestFile>C:/Users/maxim/Desktop/game/Code/Code/Content/bin/Windows/Content/DeployableForeground(64x64)x2.xnb</DestFile>
+  <DestTime>2024-08-15T12:48:00.4341887+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
