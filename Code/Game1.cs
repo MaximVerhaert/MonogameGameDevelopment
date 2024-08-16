@@ -27,6 +27,8 @@ namespace Code
         private string _currentLevel;
         private Dictionary<string, List<TileMap>> _levels;
 
+        private ICollisionDetector _collisionDetector;
+
 
         public Game1()
         {
@@ -38,6 +40,8 @@ namespace Code
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _collisionDetector = new CollisionDetector();
+
 
             // Load textures
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
@@ -179,28 +183,7 @@ namespace Code
         {
             var astronautHitbox = astronaut.Hitbox;
 
-            _isCollidingWithFloor = false;
-
-            foreach (var layer in layers.Where(l => l.ZIndex == 3)) // Assuming the floor layer has ZIndex = 3
-            {
-                foreach (var item in layer.TileMapData)
-                {
-                    int tileIndex = item.Value.TileIndex - 1;  // Access TileIndex and subtract 1
-
-                    if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
-                        continue;
-
-                    Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
-                    if (astronautHitbox.Intersects(tileBounds))
-                    {
-                        _isCollidingWithFloor = true;
-                        break;
-                    }
-                }
-
-                if (_isCollidingWithFloor)
-                    break;
-            }
+            _isCollidingWithFloor = _collisionDetector.CheckCollision(astronautHitbox, layers);
 
             _backgroundColor = _isCollidingWithFloor ? Color.Red : Color.Green;
         }
