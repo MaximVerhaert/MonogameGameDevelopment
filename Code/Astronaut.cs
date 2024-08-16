@@ -110,7 +110,7 @@ namespace Code
             animatie.Play("Idle");
             currentTexture = idleTexture;
 
-            position = new Vector2(64, 32 + 128 + 0);
+            position = new Vector2(128, 32 + 256 + 0);
             this.movementController = movementController;
             this.inputReader = reader;
             this.layers = layers ?? new List<TileMap>(); // Ensure layers is never null
@@ -232,7 +232,7 @@ namespace Code
 
                 foreach (var item in layer.TileMapData)
                 {
-                    int tileIndex = item.Value - 1;
+                    int tileIndex = item.Value.TileIndex - 1;
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                         continue;
 
@@ -285,7 +285,7 @@ namespace Code
 
                 foreach (var item in layer.TileMapData)
                 {
-                    int tileIndex = item.Value - 1;
+                    int tileIndex = item.Value.TileIndex - 1;
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                         continue;
 

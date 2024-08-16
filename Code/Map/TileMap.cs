@@ -19,12 +19,12 @@ namespace Code
         {
             public int ZIndex { get; private set; }
             public string TextureName { get; private set; }
-            public Dictionary<Vector2, int> TileMapData { get; private set; }
-            public List<Rectangle> TextureStore { get;  set; }
+            public Dictionary<Vector2, (int TileIndex, int Rotation)> TileMapData { get; private set; } // Updated to store both TileIndex and Rotation
+            public List<Rectangle> TextureStore { get; set; }
 
             private const int TileSize = 64; // Size of each tile in pixels
 
-            public TileMap(string textureName, int zIndex, Dictionary<Vector2, int> tileMapData, List<Rectangle> textureStore)
+            public TileMap(string textureName, int zIndex, Dictionary<Vector2, (int, int)> tileMapData, List<Rectangle> textureStore)
             {
                 TextureName = textureName;
                 ZIndex = zIndex;
@@ -45,22 +45,18 @@ namespace Code
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        // Skip empty lines
                         if (string.IsNullOrWhiteSpace(line))
                         {
                             continue;
                         }
 
-                        // Detect level identifiers (e.g., lvl1:, lvl2:)
                         if (line.EndsWith(":"))
                         {
-                            // Add the previous level layers to the levels dictionary
                             if (currentLevel != null && currentLevelLayers != null)
                             {
                                 levels[currentLevel] = currentLevelLayers;
                             }
 
-                            // Start a new level
                             currentLevel = line.TrimEnd(':');
                             currentLevelLayers = new List<TileMap>();
                             currentLayer = null;
@@ -69,7 +65,6 @@ namespace Code
 
                         var parts = line.Split(',');
 
-                        // Check if the line contains the correct number of parts for a layer
                         if (parts.Length == 3)
                         {
                             var layerName = parts[0].Trim();
@@ -78,15 +73,13 @@ namespace Code
 
                             if (int.TryParse(zIndexStr, out var zIndex))
                             {
-                                // Add the previous layer to the current level's layers
                                 if (currentLayer != null)
                                 {
                                     currentLevelLayers.Add(currentLayer);
                                 }
 
-                                // Create a new TileMap instance for the layer
-                                currentLayer = new TileMap(textureName, zIndex, new Dictionary<Vector2, int>(), new List<Rectangle>());
-                                row = 0; // Reset row for new layer
+                                currentLayer = new TileMap(textureName, zIndex, new Dictionary<Vector2, (int, int)>(), new List<Rectangle>());
+                                row = 0;
                             }
                             else
                             {
@@ -95,19 +88,20 @@ namespace Code
                         }
                         else if (currentLayer != null)
                         {
-                            // Handle tile map data
                             var tiles = line.Split(',');
 
                             if (tiles.Length > 0)
                             {
                                 for (int col = 0; col < tiles.Length; col++)
                                 {
-                                    if (int.TryParse(tiles[col], out var tileIndex))
+                                    var tileData = tiles[col].Trim('(', ')').Split(';');
+
+                                    if (tileData.Length == 2 && int.TryParse(tileData[0], out var tileIndex) && int.TryParse(tileData[1], out var rotation))
                                     {
-                                        currentLayer.TileMapData[new Vector2(col, row)] = tileIndex;
+                                        currentLayer.TileMapData[new Vector2(col, row)] = (tileIndex, rotation);
                                     }
                                 }
-                                row++; // Move to the next row
+                                row++;
                             }
                             else
                             {
@@ -120,7 +114,6 @@ namespace Code
                         }
                     }
 
-                    // Add the last level if it exists
                     if (currentLevel != null && currentLevelLayers != null)
                     {
                         levels[currentLevel] = currentLevelLayers;
@@ -131,25 +124,17 @@ namespace Code
             }
 
 
-
-            public static List<Rectangle> GenerateTextureStore(Texture2D texture, int tileCount)
+            public static List<Rectangle> GenerateTextureStore(Texture2D texture, int tileSize)
             {
-                var textureStore = new List<Rectangle>();
-                int textureWidth = texture.Width;
-                int textureHeight = texture.Height;
+                List<Rectangle> textureStore = new List<Rectangle>();
+                int tilesPerRow = texture.Width / tileSize;
+                int tilesPerColumn = texture.Height / tileSize;
 
-                int tilesX = textureWidth / TileSize;
-                int tilesY = textureHeight / TileSize;
-
-                for (int y = 0; y < tilesY; y++)
+                for (int y = 0; y < tilesPerColumn; y++)
                 {
-                    for (int x = 0; x < tilesX; x++)
+                    for (int x = 0; x < tilesPerRow; x++)
                     {
-                        if (textureStore.Count >= tileCount)
-                        {
-                            return textureStore;
-                        }
-                        textureStore.Add(new Rectangle(x * TileSize, y * TileSize, TileSize, TileSize));
+                        textureStore.Add(new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize));
                     }
                 }
 
@@ -157,6 +142,4 @@ namespace Code
             }
         }
     }
-
-
 }

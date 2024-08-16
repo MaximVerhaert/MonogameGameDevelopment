@@ -125,7 +125,9 @@ namespace Code
 
                 foreach (var item in layer.TileMapData)
                 {
-                    int tileIndex = item.Value - 1;
+                    int tileIndex = item.Value.TileIndex - 1;  // Access TileIndex and subtract 1
+                    int rotation = item.Value.Rotation;        // Access Rotation
+
 
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                     {
@@ -137,12 +139,40 @@ namespace Code
                     if (destination.Intersects(visibleArea))
                     {
                         Rectangle source = layer.TextureStore[tileIndex];
-                        _spriteBatch.Draw(texture, destination, source, Color.White);
+
+                        // Convert rotation to radians
+                        float rotationRadians = MathHelper.ToRadians(rotation);
+
+                        // Center point for rotation (middle of the tile)
+                        Vector2 origin = new Vector2(source.Width / 2f, source.Height / 2f);
+
+                        // Calculate the adjusted destination rectangle
+                        Rectangle adjustedDestination = new Rectangle(
+                            destination.X + (int)origin.X,
+                            destination.Y + (int)origin.Y,
+                            destination.Width,
+                            destination.Height
+                        );
+
+                        // Draw the tile with rotation
+                        _spriteBatch.Draw(
+                            texture,
+                            destinationRectangle: adjustedDestination,
+                            sourceRectangle: source,
+                            color: Color.White,
+                            rotation: rotationRadians,
+                            origin: origin,
+                            effects: SpriteEffects.None,
+                            layerDepth: 0f
+                        );
                     }
+
                 }
             }
+
             astronaut.Floorlayers = layers;
         }
+
 
 
         private void CheckCollisionWithFloorLayer()
@@ -155,7 +185,8 @@ namespace Code
             {
                 foreach (var item in layer.TileMapData)
                 {
-                    int tileIndex = item.Value - 1;
+                    int tileIndex = item.Value.TileIndex - 1;  // Access TileIndex and subtract 1
+
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                         continue;
 
