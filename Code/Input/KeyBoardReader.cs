@@ -12,7 +12,6 @@ namespace Code.Input
     {
         public Vector2 ReadInput()
         {
-
             var direction = Vector2.Zero;
             KeyboardState state = Keyboard.GetState();
             if (state.IsKeyDown(Keys.Left))
@@ -23,7 +22,12 @@ namespace Code.Input
             {
                 direction = new Vector2(1, 0);
             }
+            if (state.IsKeyDown(Keys.Space))
+            {
+                direction.Y = -1; // Jump
+            }
             return direction;
         }
+
     }
 }

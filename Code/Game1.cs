@@ -75,14 +75,17 @@ namespace Code
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
+            // Initialize movement controller with appropriate values
             IMovementController movementController = new MovementController(
                 initialSpeed: new Vector2(1, 1),
                 initialAcceleration: new Vector2(1f, 1f),
                 maxAcceleration: 5f
             );
 
-            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController);
+            // Pass the layers parameter to the Astronaut constructor
+            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, layers);
         }
+
 
         private void RenderStaticLayers()
         {
@@ -111,6 +114,7 @@ namespace Code
                     }
                 }
             }
+            astronaut.Floorlayers = layers;
         }
 
 
