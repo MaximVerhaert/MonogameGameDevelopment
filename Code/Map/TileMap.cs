@@ -32,12 +32,14 @@ namespace Code
                 TextureStore = textureStore;
             }
 
-            public static List<TileMap> LoadFromCsv(string filepath)
+            public static Dictionary<string, List<TileMap>> LoadLevelsFromCsv(string filepath)
             {
-                var layers = new List<TileMap>();
+                var levels = new Dictionary<string, List<TileMap>>();
                 using (var reader = new StreamReader(filepath))
                 {
+                    List<TileMap> currentLevelLayers = null;
                     TileMap currentLayer = null;
+                    string currentLevel = null;
                     string line;
                     int row = 0;
 
@@ -49,23 +51,37 @@ namespace Code
                             continue;
                         }
 
+                        // Detect level identifiers (e.g., lvl1:, lvl2:)
+                        if (line.EndsWith(":"))
+                        {
+                            // Add the previous level layers to the levels dictionary
+                            if (currentLevel != null && currentLevelLayers != null)
+                            {
+                                levels[currentLevel] = currentLevelLayers;
+                            }
+
+                            // Start a new level
+                            currentLevel = line.TrimEnd(':');
+                            currentLevelLayers = new List<TileMap>();
+                            currentLayer = null;
+                            continue;
+                        }
+
                         var parts = line.Split(',');
 
-                        // Check if the line contains the correct number of parts
+                        // Check if the line contains the correct number of parts for a layer
                         if (parts.Length == 3)
                         {
-                            // Layer metadata
                             var layerName = parts[0].Trim();
                             var zIndexStr = parts[1].Trim();
                             var textureName = parts[2].Trim();
 
-                            // Parse zIndex and create new layer if valid
                             if (int.TryParse(zIndexStr, out var zIndex))
                             {
-                                // Add the previous layer to the list
+                                // Add the previous layer to the current level's layers
                                 if (currentLayer != null)
                                 {
-                                    layers.Add(currentLayer);
+                                    currentLevelLayers.Add(currentLayer);
                                 }
 
                                 // Create a new TileMap instance for the layer
@@ -82,7 +98,6 @@ namespace Code
                             // Handle tile map data
                             var tiles = line.Split(',');
 
-                            // Check if tiles contain valid data
                             if (tiles.Length > 0)
                             {
                                 for (int col = 0; col < tiles.Length; col++)
@@ -105,14 +120,14 @@ namespace Code
                         }
                     }
 
-                    // Add the last layer if it exists
-                    if (currentLayer != null)
+                    // Add the last level if it exists
+                    if (currentLevel != null && currentLevelLayers != null)
                     {
-                        layers.Add(currentLayer);
+                        levels[currentLevel] = currentLevelLayers;
                     }
                 }
 
-                return layers;
+                return levels;
             }
 
 

@@ -24,6 +24,10 @@ namespace Code
         private Color _backgroundColor = Color.CornflowerBlue;
         private bool _isCollidingWithFloor = false;
 
+        private string _currentLevel;
+        private Dictionary<string, List<TileMap>> _levels;
+
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -44,34 +48,57 @@ namespace Code
 
             textures = new Dictionary<string, Texture2D>();
 
-            // Load tile map layers
-            layers = TileMap.LoadFromCsv("../../../Data/map.csv");
+            // Load all levels
+            _levels = TileMap.LoadLevelsFromCsv("../../../Data/map.csv");
 
-            // Load and cache textures
-            foreach (var layer in layers)
+            // Load and cache textures for the first level (default level)
+            SetCurrentLevel("lvl1");
+        }
+
+        private void SetCurrentLevel(string levelName)
+        {
+            if (_levels.ContainsKey(levelName))
             {
-                if (!textures.ContainsKey(layer.TextureName))
+                _currentLevel = levelName;
+                layers = _levels[_currentLevel];
+
+                // Load and cache textures for the new level
+                foreach (var layer in layers)
                 {
-                    textures[layer.TextureName] = Content.Load<Texture2D>(layer.TextureName);
+                    if (!textures.ContainsKey(layer.TextureName))
+                    {
+                        textures[layer.TextureName] = Content.Load<Texture2D>(layer.TextureName);
+                    }
+
+                    var texture = textures[layer.TextureName];
+                    layer.TextureStore = TileMap.GenerateTextureStore(texture, 64); // Adjust as needed
                 }
 
-                var texture = textures[layer.TextureName];
-                layer.TextureStore = TileMap.GenerateTextureStore(texture, 64); // Adjust as needed
+                // Render the map for the new level
+                var viewport = GraphicsDevice.Viewport;
+                _mapRenderTarget = new RenderTarget2D(GraphicsDevice, viewport.Width, viewport.Height);
+
+                GraphicsDevice.SetRenderTarget(_mapRenderTarget);
+                GraphicsDevice.Clear(Color.Transparent);
+
+                _spriteBatch.Begin();
+                RenderStaticLayers();
+                _spriteBatch.End();
+
+                GraphicsDevice.SetRenderTarget(null); // Reset to default
             }
-
-            // Create and render to RenderTarget2D
-            var viewport = GraphicsDevice.Viewport;
-            _mapRenderTarget = new RenderTarget2D(GraphicsDevice, viewport.Width, viewport.Height);
-
-            GraphicsDevice.SetRenderTarget(_mapRenderTarget);
-            GraphicsDevice.Clear(Color.Transparent);
-
-            _spriteBatch.Begin();
-            RenderStaticLayers();
-            _spriteBatch.End();
-
-            GraphicsDevice.SetRenderTarget(null); // Reset to default
+            else
+            {
+                Console.WriteLine($"Level '{levelName}' not found.");
+            }
         }
+
+        private void SwitchLevel(string levelName)
+        {
+            SetCurrentLevel(levelName);
+        }
+
+
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
@@ -185,6 +212,11 @@ namespace Code
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.L))
+            {
+                SwitchLevel("lvl2"); // Example of switching to level 2 when 'L' key is pressed
+            }
 
             astronaut.Update(gameTime);
 
