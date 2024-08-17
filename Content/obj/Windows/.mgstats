@@ -1,12 +1,13 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/AstronautIdle(64x64)x9.xnb","TextureProcessor","Texture2DContent",9801,147541,0,4181634
-"C:/Users/maxim/Desktop/game/Code/Content/AstronautRunning(64x64)x12.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/AstronautRunning(64x64)x12.xnb","TextureProcessor","Texture2DContent",7380,196693,0,0414633
-"C:/Users/maxim/Desktop/game/Code/Content/Border(64x64)x11.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Border(64x64)x11.xnb","TextureProcessor","Texture2DContent",16536,180309,0,043411
-"C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/DeployableBackground(64x64)x3.xnb","TextureProcessor","Texture2DContent",6035,49237,0,0308584
-"C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/DeployableForeground(64x64)x2.xnb","TextureProcessor","Texture2DContent",3645,32853,0,0225215
-"C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Fonts/SpaceFont.xnb","FontDescriptionProcessor","SpriteFontContent",2068,21535,0,3522769
-"C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/complete.xnb","SoundEffectProcessor","SoundEffectContent",430926,430953,0,780198
-"C:/Users/maxim/Desktop/game/Code/Content/Sounds/game.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/game.xnb","SoundEffectProcessor","SoundEffectContent",877902,877929,0,716054
-"C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/laser-shot.xnb","SoundEffectProcessor","SoundEffectContent",285774,285801,0,6236075
-"C:/Users/maxim/Desktop/game/Code/Content/space_bg(64x64)x5.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/space_bg(64x64)x5.xnb","TextureProcessor","Texture2DContent",6831,82005,0,0408619
-"C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Wall(64x64)x7.xnb","TextureProcessor","Texture2DContent",9268,114773,0,0410283
+"C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/AstronautIdle(64x64)x9.xnb","TextureProcessor","Texture2DContent",9801,147541,0,3297682
+"C:/Users/maxim/Desktop/game/Code/Content/AstronautRunning(64x64)x12.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/AstronautRunning(64x64)x12.xnb","TextureProcessor","Texture2DContent",7380,196693,0,0222023
+"C:/Users/maxim/Desktop/game/Code/Content/Border(64x64)x11.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Border(64x64)x11.xnb","TextureProcessor","Texture2DContent",16536,180309,0,0133019
+"C:/Users/maxim/Desktop/game/Code/Content/CollectableForeground(64x64)x2.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/CollectableForeground(64x64)x2.xnb","TextureProcessor","Texture2DContent",2624,32853,0,0056901
+"C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/DeployableBackground(64x64)x3.xnb","TextureProcessor","Texture2DContent",6035,49237,0,0168319
+"C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/DeployableForeground(64x64)x2.xnb","TextureProcessor","Texture2DContent",3645,32853,0,0169311
+"C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Fonts/SpaceFont.xnb","FontDescriptionProcessor","SpriteFontContent",2069,136223,0,3610495
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/complete.xnb","SoundEffectProcessor","SoundEffectContent",430926,430953,0,3852623
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/game.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/game.xnb","SoundEffectProcessor","SoundEffectContent",877902,877929,0,4633607
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/laser-shot.xnb","SoundEffectProcessor","SoundEffectContent",285774,285801,0,3181857
+"C:/Users/maxim/Desktop/game/Code/Content/space_bg(64x64)x5.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/space_bg(64x64)x5.xnb","TextureProcessor","Texture2DContent",6831,82005,0,019171
+"C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Wall(64x64)x7.xnb","TextureProcessor","Texture2DContent",9268,114773,0,0287863

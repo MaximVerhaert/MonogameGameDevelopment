@@ -70,7 +70,7 @@ namespace Code
 
             InitializeGameObjects(idleTexture, runningTexture);
 
-            SpriteFont font = Content.Load<SpriteFont>("Fonts/SpaceFont");
+            SpriteFont font = Content.Load<SpriteFont>(@"Fonts\SpaceFont");
             laserEffect = Content.Load<SoundEffect>(@"Sounds\laser-shot");
             gameEffect = Content.Load<SoundEffect>(@"Sounds\game");
             completeEffect = Content.Load<SoundEffect>(@"Sounds\complete");

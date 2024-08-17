@@ -3,7 +3,7 @@
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav</SourceFile>
   <SourceTime>2024-08-17T19:13:37.9754511+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/complete.xnb</DestFile>
-  <DestTime>2024-08-17T19:15:48.6656013+02:00</DestTime>
+  <DestTime>2024-08-17T20:52:01.5719242+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

@@ -87,7 +87,7 @@ namespace Code
 
         private void InitializeButtons(Viewport viewport)
         {
-            int buttonWidth = 200;
+            int buttonWidth = 250;
             int buttonHeight = 50;
             int centerX = viewport.Width / 2 - buttonWidth / 2;
             int startY = viewport.Height / 2 - 100;
@@ -95,7 +95,7 @@ namespace Code
             _mainButtons = new List<Button>
     {
         new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Play", Color.LightGray, _buttonClickSound),
-        new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Select Level", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Levels", Color.LightGray, _buttonClickSound),
         new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Exit", Color.LightGray, _buttonClickSound)
     };
 
@@ -103,13 +103,13 @@ namespace Code
     {
         new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Level 1", Color.LightGray, _buttonClickSound),
         new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Level 2", Color.LightGray, _buttonClickSound),
-        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back", Color.LightGray, _buttonClickSound)
+        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "< Back", Color.LightGray, _buttonClickSound)
     };
 
             _victoryButtons = new List<Button>
     {
         new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Restart", Color.LightGray, _buttonClickSound),
-        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back to Main Menu", Color.LightGray, _buttonClickSound)
+        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Main Menu", Color.LightGray, _buttonClickSound)
     };
         }
 
@@ -181,7 +181,7 @@ namespace Code
                         _victoryMessage = null; // Clear victory message
                         PlayRequested?.Invoke(this, "last"); // Restart the last level
                     }
-                    else if (button.Text == "Back to Main Menu")
+                    else if (button.Text == "Main Menu")
                     {
                         _currentState = MenuState.Main;
                         _victoryMessage = null; // Clear victory message
@@ -218,10 +218,11 @@ namespace Code
                             Color.Gold,
                             0f,
                             _font.MeasureString(_victoryMessage) / 2,
-                            1f,
+                            0.5f, // Adjust this value to make the font smaller
                             SpriteEffects.None,
                             0f);
                     }
+
 
                     // Draw victory buttons
                     foreach (var button in _victoryButtons)

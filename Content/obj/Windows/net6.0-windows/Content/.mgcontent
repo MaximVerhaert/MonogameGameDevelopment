@@ -7,6 +7,7 @@
     <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautRunning(64x64)x12.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Border(64x64)x11.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/CollectableForeground(64x64)x2.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont</File>
@@ -17,6 +18,7 @@
     <File>C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
