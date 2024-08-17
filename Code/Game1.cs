@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Code.Code;
-using Code.Input;
+﻿using Code.Input;
 using Code.Interfaces;
+using Code.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Linq;
 
 namespace Code
 {
@@ -16,19 +14,9 @@ namespace Code
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Astronaut astronaut;
-
-        private List<TileMap> layers;
-        private Dictionary<string, Texture2D> textures;
-        private RenderTarget2D _mapRenderTarget;
-
         private Color _backgroundColor = Color.CornflowerBlue;
-        private bool _isCollidingWithFloor = false;
-
-        private string _currentLevel;
-        private Dictionary<string, List<TileMap>> _levels;
-
+        private ILevelManager _levelManager;
         private ICollisionDetector _collisionDetector;
-
 
         public Game1()
         {
@@ -42,140 +30,36 @@ namespace Code
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _collisionDetector = new CollisionDetector(); // Initialize the collision detector
 
+            // Initialize LevelManager
+            _levelManager = new LevelManager(GraphicsDevice, _spriteBatch, Content);
 
+            // Load all levels and set current level
+            _levelManager.LoadLevels("../../../Data/map.csv");
+            _levelManager.SetCurrentLevel("lvl1");
 
-            // Load textures
+            // Load textures for astronaut
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
 
-            // Initialize game objects
+            // Initialize game objects after setting the current level
             InitializeGameObjects(idleTexture, runningTexture);
-
-            textures = new Dictionary<string, Texture2D>();
-
-            // Load all levels
-            _levels = TileMap.LoadLevelsFromCsv("../../../Data/map.csv");
-
-            // Load and cache textures for the first level (default level)
-            SetCurrentLevel("lvl1");
         }
-
-        private void SetCurrentLevel(string levelName)
-        {
-            if (_levels.ContainsKey(levelName))
-            {
-                _currentLevel = levelName;
-                layers = _levels[_currentLevel];
-
-                // Load and cache textures for the new level
-                foreach (var layer in layers)
-                {
-                    if (!textures.ContainsKey(layer.TextureName))
-                    {
-                        textures[layer.TextureName] = Content.Load<Texture2D>(layer.TextureName);
-                    }
-
-                    var texture = textures[layer.TextureName];
-                    layer.TextureStore = TileMap.GenerateTextureStore(texture, 64); // Adjust as needed
-                }
-
-                // Render the map for the new level
-                var viewport = GraphicsDevice.Viewport;
-                _mapRenderTarget = new RenderTarget2D(GraphicsDevice, viewport.Width, viewport.Height);
-
-                GraphicsDevice.SetRenderTarget(_mapRenderTarget);
-                GraphicsDevice.Clear(Color.Transparent);
-
-                _spriteBatch.Begin();
-                RenderStaticLayers();
-                _spriteBatch.End();
-
-                GraphicsDevice.SetRenderTarget(null); // Reset to default
-            }
-            else
-            {
-                Console.WriteLine($"Level '{levelName}' not found.");
-            }
-        }
-
-        private void SwitchLevel(string levelName)
-        {
-            SetCurrentLevel(levelName);
-        }
-
-
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
-            // Initialize movement controller with appropriate values
+            // Ensure Layers is initialized before passing to Astronaut
+            if (_levelManager.Layers == null || !_levelManager.Layers.Any())
+            {
+                throw new InvalidOperationException("Layers must be initialized before creating Astronaut.");
+            }
+
             IMovementController movementController = new MovementController(
                 initialSpeed: new Vector2(1, 1),
                 initialAcceleration: new Vector2(1f, 1f),
                 maxAcceleration: 5f
             );
 
-            // Pass the layers parameter to the Astronaut constructor
-            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, layers, _collisionDetector);
-        }
-
-
-        private void RenderStaticLayers()
-        {
-            var viewport = GraphicsDevice.Viewport;
-            var visibleArea = new Rectangle(0, 0, viewport.Width, viewport.Height);
-
-            foreach (var layer in layers.OrderBy(l => l.ZIndex))
-            {
-                var texture = textures[layer.TextureName];
-
-                foreach (var item in layer.TileMapData)
-                {
-                    int tileIndex = item.Value.TileIndex - 1;  // Access TileIndex and subtract 1
-                    int rotation = item.Value.Rotation;        // Access Rotation
-
-
-                    if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
-                    {
-                        continue;
-                    }
-
-                    Rectangle destination = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
-
-                    if (destination.Intersects(visibleArea))
-                    {
-                        Rectangle source = layer.TextureStore[tileIndex];
-
-                        // Convert rotation to radians
-                        float rotationRadians = MathHelper.ToRadians(rotation);
-
-                        // Center point for rotation (middle of the tile)
-                        Vector2 origin = new Vector2(source.Width / 2f, source.Height / 2f);
-
-                        // Calculate the adjusted destination rectangle
-                        Rectangle adjustedDestination = new Rectangle(
-                            destination.X + (int)origin.X,
-                            destination.Y + (int)origin.Y,
-                            destination.Width,
-                            destination.Height
-                        );
-
-                        // Draw the tile with rotation
-                        _spriteBatch.Draw(
-                            texture,
-                            destinationRectangle: adjustedDestination,
-                            sourceRectangle: source,
-                            color: Color.White,
-                            rotation: rotationRadians,
-                            origin: origin,
-                            effects: SpriteEffects.None,
-                            layerDepth: 0f
-                        );
-                    }
-
-                }
-            }
-
-            astronaut.Floorlayers = layers;
+            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, _levelManager.Layers, _collisionDetector);
         }
 
         protected override void Update(GameTime gameTime)
@@ -185,7 +69,7 @@ namespace Code
 
             if (Keyboard.GetState().IsKeyDown(Keys.L))
             {
-                SwitchLevel("lvl2"); // Example of switching to level 2 when 'L' key is pressed
+                _levelManager.SetCurrentLevel("lvl2"); ; // Example of switching to level 2 when 'L' key is pressed
             }
 
             astronaut.Update(gameTime);
@@ -198,17 +82,13 @@ namespace Code
             GraphicsDevice.Clear(_backgroundColor);
 
             _spriteBatch.Begin();
-
-            // Draw cached map layers
-            _spriteBatch.Draw(_mapRenderTarget, Vector2.Zero, Color.White);
-            // Draw the astronaut
+            _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
             astronaut.Draw(_spriteBatch);
-            // Draw the hitbox border
             DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
-
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
     }
 }
+

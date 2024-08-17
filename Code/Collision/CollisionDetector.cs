@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Code.Code;
 using Code.Interfaces;
-using System.Linq;
 using Microsoft.Xna.Framework;
 
 namespace Code
@@ -10,6 +11,11 @@ namespace Code
     {
         public (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers)
         {
+            if (layers == null)
+            {
+                throw new ArgumentNullException(nameof(layers), "Layers cannot be null");
+            }
+
             foreach (var layer in layers.Where(l => l.ZIndex == 3))
             {
                 foreach (var item in layer.TileMapData)
@@ -28,6 +34,7 @@ namespace Code
             }
             return (false, Rectangle.Empty);
         }
-    }
 
+    }
 }
+

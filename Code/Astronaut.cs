@@ -64,7 +64,6 @@ namespace Code
 
         // List of layers to check for collision
         private List<TileMap> layers;
-        public List<TileMap> Floorlayers;
 
         // List to track the current standing tiles (layer, tile position)
         private List<(TileMap Layer, Point TilePosition)> currentStandingTiles = new List<(TileMap, Point)>();
@@ -126,8 +125,8 @@ namespace Code
         {
             Move(gameTime);
             animatie.Update(gameTime);
-            CheckCollisionWithFloorLayer(Floorlayers);
-            CheckCollisionWithCeilingLayer(Floorlayers);
+            CheckCollisionWithFloorLayer(layers);
+            CheckCollisionWithCeilingLayer(layers);
         }
 
         private Point GetStandingTilePosition()
@@ -206,13 +205,13 @@ namespace Code
         }
 
 
-        private void CheckCollisionWithFloorLayer(List<TileMap> floorLayers)
+        private void CheckCollisionWithFloorLayer(List<TileMap> layers)
         {
             Rectangle bottomHitbox = new Rectangle(Hitbox.X, Hitbox.Bottom -1, Hitbox.Width, 1);
             bool wasGrounded = isGrounded;
             isGrounded = false;
 
-            var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, floorLayers);
+            var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, layers);
             if (collisionResult.isColliding)
             {
                 Rectangle tileBounds = collisionResult.tileBounds;
@@ -235,12 +234,12 @@ namespace Code
         }
 
 
-        private void CheckCollisionWithCeilingLayer(List<TileMap> ceilingLayers)
+        private void CheckCollisionWithCeilingLayer(List<TileMap> layers)
         {
             Rectangle topHitbox = new Rectangle(Hitbox.X,Hitbox.Top,Hitbox.Width,1);
 
             // Use CollisionDetector to check for collisions with the top hitbox
-            var collisionResult = _collisionDetector.CheckCollision(topHitbox, ceilingLayers);
+            var collisionResult = _collisionDetector.CheckCollision(topHitbox, layers);
 
             if (collisionResult.isColliding)
             {
