@@ -3,10 +3,11 @@
     "",
     "\\Content",
     "\\Content\\Fonts",
+    "\\Data",
     "\\Interfaces",
     "\\MainMenu",
     "\\Map"
   ],
-  "SelectedNode": "\\Interfaces\\ILevelManager.cs",
+  "SelectedNode": "\\Data\\map.csv",
   "PreviewInSolutionExplorer": false
 }
