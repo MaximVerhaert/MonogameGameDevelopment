@@ -16,6 +16,8 @@ namespace Code
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private SpriteBatch _uiBatch; // Add this field to your class
+
         private Astronaut astronaut;
         private Color _backgroundColor = Color.CornflowerBlue;
         private ILevelManager _levelManager;
@@ -38,6 +40,10 @@ namespace Code
 
         private float soundEffectVolume = 0.25f;
 
+        private int _points = 0;
+        private double _lastCollectedTime = 0; // To track time since last collection
+
+
         public enum GameState
         {
             Menu,
@@ -54,6 +60,8 @@ namespace Code
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _uiBatch = new SpriteBatch(GraphicsDevice); // Initialize the UI batch
+
             _collisionDetector = new CollisionDetector();
             _levelManager = new LevelManager(GraphicsDevice, _spriteBatch, Content);
             _camera = new Camera(GraphicsDevice.Viewport);
@@ -155,26 +163,36 @@ namespace Code
 
             astronaut.Update(gameTime);
 
-            // Check for collision with DeployableFinish layer
-            Rectangle astronautHitbox = astronaut.Hitbox; // Assuming Astronaut has a Hitbox property
-            var (isColliding, tileBounds) = _collisionDetector.CheckCollision(astronautHitbox, _levelManager.Layers, 6);
+            // Prevent multiple collections within 1 second
+            if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedTime > 1000)
+            {
+                // Check for collision with items in layer 7
+                var (isCollidingWithItem, itemBounds) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
+                if (isCollidingWithItem)
+                {
+                    _points++; // Increase points
+                    _lastCollectedTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
+                }
+            }
 
-            if (isColliding)
+            // Check for collision with DeployableFinish layer (layer 6)
+            var (isCollidingWithFinish, finishTileBounds) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 6);
+
+            if (isCollidingWithFinish)
             {
                 Console.WriteLine("Collision detected with DeployableFinish. Transitioning to next level.");
 
                 // Determine the next level
                 string nextLevel = GetNextLevel(_lastPlayedLevel);
-                if(nextLevel == "lvl1")
+                if (nextLevel == "lvl1")
                 {
-                    _mainMenu.ShowVictoryMessage("Congratulations! You Have beaten the game!");
+                    _mainMenu.ShowVictoryMessage($"Congratulations! You have beaten the game with {_points} points!");
                     _currentState = GameState.Menu;
                     completeEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-
+                    _points = 0; // Reset points after the game ends
                 }
                 _lastPlayedLevel = nextLevel;
                 _levelManager.SetCurrentLevel(nextLevel);
-                // Play sound effect for loading a level
 
                 // Reload textures if necessary
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
@@ -188,9 +206,6 @@ namespace Code
 
             _camera.Update(astronaut.Position);
         }
-
-
-
 
 
         private string GetNextLevel(string currentLevel)
@@ -220,19 +235,31 @@ namespace Code
             switch (_currentState)
             {
                 case GameState.Menu:
-                    _mainMenu.Draw(_spriteBatch);
+                    _spriteBatch.Begin();
+                    _mainMenu.Draw(_spriteBatch); // Ensure MainMenu.Draw does not call Begin again
+                    _spriteBatch.End();
                     break;
+
                 case GameState.Playing:
+                    // Draw the game world with camera transformation
                     _spriteBatch.Begin(transformMatrix: _camera.Transform);
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
                     _spriteBatch.End();
+
+                    // Draw the UI elements (e.g., points counter) on top of the game world
+                    _uiBatch.Begin(); // Ensure _uiBatch.Begin does not overlap with _spriteBatch.Begin
+                    SpriteFont font = Content.Load<SpriteFont>(@"Fonts\SpaceFont");
+                    _uiBatch.DrawString(font, $"Points: {_points}", new Vector2(10, 10), Color.White);
+                    _uiBatch.End();
                     break;
             }
 
             base.Draw(gameTime);
         }
+
+
 
         private void OnPlayRequested(object sender, string levelName)
         {

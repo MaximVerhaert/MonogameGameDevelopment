@@ -10,6 +10,6 @@
     "\\MainMenu",
     "\\Map"
   ],
-  "SelectedNode": "\\Content\\Content.mgcb",
+  "SelectedNode": "\\Interfaces\\ICollisionDetector.cs",
   "PreviewInSolutionExplorer": false
 }

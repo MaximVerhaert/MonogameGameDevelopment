@@ -192,7 +192,6 @@ namespace Code
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin();
 
             switch (_currentState)
             {
@@ -232,7 +231,6 @@ namespace Code
                     break;
             }
 
-            spriteBatch.End();
         }
 
         public void ShowVictoryMessage(string message)
