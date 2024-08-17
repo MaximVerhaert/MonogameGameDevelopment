@@ -3,6 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Audio;
+
 
 namespace Code
 {
@@ -17,25 +19,35 @@ namespace Code
 
         private double _lastClickTime = 0;
         private const double ClickCooldown = 150; // milliseconds
+        private SoundEffect _buttonClickSound;
+
 
         private class Button
         {
             public Rectangle Bounds { get; set; }
             public string Text { get; set; }
             public Color Color { get; set; }
+            private SoundEffect _clickSound; // Add this field
 
-            public Button(Rectangle bounds, string text, Color color)
+            public Button(Rectangle bounds, string text, Color color, SoundEffect clickSound) // Modify constructor
             {
                 Bounds = bounds;
                 Text = text;
                 Color = color;
+                _clickSound = clickSound; // Initialize the sound effect
             }
 
             public bool IsClicked(MouseState mouseState)
             {
-                return mouseState.LeftButton == ButtonState.Pressed && Bounds.Contains(mouseState.Position);
+                if (mouseState.LeftButton == ButtonState.Pressed && Bounds.Contains(mouseState.Position))
+                {
+                    _clickSound?.Play(); // Play the sound effect on click
+                    return true;
+                }
+                return false;
             }
 
+            // No need to change the Draw method
             public void Draw(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel)
             {
                 spriteBatch.Draw(pixel, Bounds, Color);
@@ -48,6 +60,7 @@ namespace Code
             }
         }
 
+
         private SpriteFont _font;
         private Texture2D _pixel;
         private List<Button> _mainButtons;
@@ -59,15 +72,18 @@ namespace Code
         public event EventHandler<string> PlayRequested;
         public event EventHandler ExitRequested;
 
-        public MainMenu(GraphicsDevice graphicsDevice, SpriteFont font)
+        public MainMenu(GraphicsDevice graphicsDevice, SpriteFont font, SoundEffect buttonClickSound)
         {
             _font = font;
             _pixel = new Texture2D(graphicsDevice, 1, 1);
             _pixel.SetData(new[] { Color.White });
 
+            _buttonClickSound = buttonClickSound; // Assign the sound effect
+
             InitializeButtons(graphicsDevice.Viewport);
             _currentState = MenuState.Main;
         }
+
 
         private void InitializeButtons(Viewport viewport)
         {
@@ -77,26 +93,26 @@ namespace Code
             int startY = viewport.Height / 2 - 100;
 
             _mainButtons = new List<Button>
-            {
-                new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Play", Color.LightGray),
-                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Select Level", Color.LightGray),
-                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Exit", Color.LightGray)
-            };
+    {
+        new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Play", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Select Level", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Exit", Color.LightGray, _buttonClickSound)
+    };
 
             _levelButtons = new List<Button>
-            {
-                new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Level 1", Color.LightGray),
-                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Level 2", Color.LightGray),
-                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back", Color.LightGray)
-            };
+    {
+        new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Level 1", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Level 2", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back", Color.LightGray, _buttonClickSound)
+    };
 
-            // Initialize buttons for Victory state
             _victoryButtons = new List<Button>
-            {
-                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Restart", Color.LightGray),
-                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back to Main Menu", Color.LightGray)
-            };
+    {
+        new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Restart", Color.LightGray, _buttonClickSound),
+        new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back to Main Menu", Color.LightGray, _buttonClickSound)
+    };
         }
+
 
         public void Update(MouseState mouseState, GameTime gameTime)
         {

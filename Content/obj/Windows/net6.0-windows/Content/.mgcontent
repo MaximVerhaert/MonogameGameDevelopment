@@ -10,10 +10,12 @@
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/space_bg(64x64)x5.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

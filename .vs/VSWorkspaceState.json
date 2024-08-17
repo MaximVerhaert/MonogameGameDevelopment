@@ -4,11 +4,12 @@
     "\\Collision",
     "\\Content",
     "\\Content\\Fonts",
+    "\\Content\\Sounds",
     "\\Data",
     "\\Interfaces",
     "\\MainMenu",
     "\\Map"
   ],
-  "SelectedNode": "\\MainMenu\\MainFOnt.cs",
+  "SelectedNode": "\\Content\\Content.mgcb",
   "PreviewInSolutionExplorer": false
 }

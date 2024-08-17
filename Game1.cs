@@ -7,6 +7,7 @@ using Code.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace Code
@@ -31,7 +32,8 @@ namespace Code
         private Dictionary<string, Vector2> levelStartingPositions;
 
         private bool _hasCompletedLevel; // Flag to indicate level completion
-
+        private SoundEffect laserEffect;
+        private float soundEffectVolume = 0.25f;
 
         public enum GameState
         {
@@ -66,13 +68,14 @@ namespace Code
             InitializeGameObjects(idleTexture, runningTexture);
 
             SpriteFont font = Content.Load<SpriteFont>("Fonts/SpaceFont");
-            _mainMenu = new MainMenu(GraphicsDevice, font);
+            laserEffect = Content.Load<SoundEffect>(@"Sounds\laser-shot");
+
+            _mainMenu = new MainMenu(GraphicsDevice, font, laserEffect);
             _mainMenu.PlayRequested += OnPlayRequested;
             _mainMenu.ExitRequested += OnExitRequested;
 
             _currentState = GameState.Menu;
             _hasCompletedLevel = false; // Initialize the flag
-
         }
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)

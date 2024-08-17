@@ -80,6 +80,12 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/SpaceFont.spritefont
 
+#begin Sounds/laser-shot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/laser-shot.wav
+
 #begin space_bg(64x64)x5.png
 /importer:TextureImporter
 /processor:TextureProcessor
