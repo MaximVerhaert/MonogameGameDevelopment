@@ -92,11 +92,29 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/SpaceFont.spritefont
 
+#begin Sounds/collect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/collect.wav
+
 #begin Sounds/complete.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/complete.wav
+
+#begin Sounds/damage.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/damage.wav
+
+#begin Sounds/death.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/death.wav
 
 #begin Sounds/game.wav
 /importer:WavImporter

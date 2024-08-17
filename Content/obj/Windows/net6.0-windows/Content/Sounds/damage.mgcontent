@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav</SourceFile>
-  <SourceTime>2024-08-17T21:09:27.2858016+02:00</SourceTime>
-  <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/complete.xnb</DestFile>
-  <DestTime>2024-08-17T21:52:10.5023839+02:00</DestTime>
+  <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/damage.wav</SourceFile>
+  <SourceTime>2024-08-17T19:29:29.6355199+02:00</SourceTime>
+  <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/Sounds/damage.xnb</DestFile>
+  <DestTime>2024-08-17T21:54:36.1972379+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

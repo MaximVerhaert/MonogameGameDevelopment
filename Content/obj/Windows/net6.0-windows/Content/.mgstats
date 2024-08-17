@@ -1,1 +1,4 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/collect.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/Sounds/collect.xnb","SoundEffectProcessor","SoundEffectContent",115278,115305,0,3771464
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/damage.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/Sounds/damage.xnb","SoundEffectProcessor","SoundEffectContent",124494,124521,0,2581652
+"C:/Users/maxim/Desktop/game/Code/Content/Sounds/death.wav","C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/Sounds/death.xnb","SoundEffectProcessor","SoundEffectContent",271950,271977,0,3350212

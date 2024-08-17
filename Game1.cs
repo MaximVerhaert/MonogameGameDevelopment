@@ -38,6 +38,10 @@ namespace Code
         private SoundEffect gameEffect;
         private SoundEffect completeEffect;
 
+        private SoundEffect collectEffect;
+        private SoundEffect damageEffect;
+        private SoundEffect deathEffect;
+
         private float soundEffectVolume = 0.25f;
 
         private int _points = 0;
@@ -82,6 +86,10 @@ namespace Code
             laserEffect = Content.Load<SoundEffect>(@"Sounds\laser-shot");
             gameEffect = Content.Load<SoundEffect>(@"Sounds\game");
             completeEffect = Content.Load<SoundEffect>(@"Sounds\complete");
+
+            collectEffect = Content.Load<SoundEffect>(@"Sounds\collect");
+            damageEffect = Content.Load<SoundEffect>(@"Sounds\damage");
+            deathEffect = Content.Load<SoundEffect>(@"Sounds\death");
 
             _mainMenu = new MainMenu(GraphicsDevice, font, laserEffect);
             _mainMenu.PlayRequested += OnPlayRequested;
@@ -170,6 +178,7 @@ namespace Code
                 var (isCollidingWithItem, itemBounds) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
                 if (isCollidingWithItem)
                 {
+                    collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
                     _points++; // Increase points
                     _lastCollectedTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
                 }

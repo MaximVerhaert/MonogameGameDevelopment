@@ -93,3 +93,6 @@ C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\laser-s
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\complete.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\game.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\CollectableForeground(64x64)x2.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\collect.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\damage.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\death.xnb
