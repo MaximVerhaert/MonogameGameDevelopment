@@ -70,8 +70,10 @@ namespace Code
         private List<(TileMap Layer, Point TilePosition)> currentStandingTiles = new List<(TileMap, Point)>();
         private List<(TileMap Layer, Point TilePosition)> previousStandingTiles = new List<(TileMap, Point)>();
 
+        private ICollisionDetector _collisionDetector;
 
-        public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController, List<TileMap> layers)
+
+        public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController, List<TileMap> layers, ICollisionDetector collisionDetector)
         {
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
@@ -113,7 +115,11 @@ namespace Code
             position = new Vector2(128, 32 + 256 + 0);
             this.movementController = movementController;
             this.inputReader = reader;
-            this.layers = layers ?? new List<TileMap>(); // Ensure layers is never null
+            this.layers = layers ?? new List<TileMap>();
+
+
+            _collisionDetector = collisionDetector;
+
         }
 
         public void Update(GameTime gameTime)
@@ -213,51 +219,31 @@ namespace Code
 
         private void CheckCollisionWithFloorLayer(List<TileMap> floorLayers)
         {
-            var astronautHitbox = Hitbox;
-            bool wasGrounded = isGrounded; // Keep track of previous grounded state
-            bool isColliding = false; // Flag to check if there's a collision
+            // Define a new rectangle that represents only the bottom of the hitbox
+            Rectangle bottomHitbox = new Rectangle(
+                Hitbox.X,
+                Hitbox.Bottom - 1,  // Just the bottom edge of the hitbox
+                Hitbox.Width,
+                1  // Height of 1 pixel to check just the bottom edge
+            );
 
+            bool wasGrounded = isGrounded; // Keep track of previous grounded state
             isGrounded = false; // Reset grounded status before checking
 
-            if (floorLayers == null)
-            {
-                Console.WriteLine("Layers list is null.");
-                return;
-            }
+            // Use CollisionDetector to check for collisions with the bottom hitbox
+            var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, floorLayers);
 
-            foreach (var layer in floorLayers.Where(l => l.ZIndex == 3)) // Floor layer
+            if (collisionResult.isColliding)
             {
-                if (layer.TileMapData == null || layer.TextureStore == null)
-                    continue;
+                Rectangle tileBounds = collisionResult.tileBounds;
+                isGrounded = true;
 
-                foreach (var item in layer.TileMapData)
+                // Adjust position to be on top of the floor
+                if (!wasGrounded)
                 {
-                    int tileIndex = item.Value.TileIndex - 1;
-                    if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
-                        continue;
-
-                    Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
-
-                    // Check if the player's bottom is colliding with the top of the tile
-                    if (astronautHitbox.Bottom > tileBounds.Top && astronautHitbox.Bottom <= tileBounds.Bottom &&
-                        astronautHitbox.Right > tileBounds.Left && astronautHitbox.Left < tileBounds.Right)
-                    {
-                        // Handle collision response
-                        isGrounded = true;
-                        isColliding = true;
-
-                        // Adjust position to be on top of the floor
-                        if (!wasGrounded)
-                        {
-                            velocity.Y = 0; // Stop downward movement
-                            position.Y = tileBounds.Top - astronautHitbox.Height; // Adjust position to be on top of the floor
-                        }
-                        break;
-                    }
+                    velocity.Y = 0; // Stop downward movement
+                    position.Y = tileBounds.Top - Hitbox.Height; // Adjust position to be on top of the floor
                 }
-
-                if (isColliding)
-                    break;
             }
 
             // Recalculate gravity only if the astronaut is no longer grounded
@@ -267,51 +253,34 @@ namespace Code
             }
         }
 
+
         private void CheckCollisionWithCeilingLayer(List<TileMap> ceilingLayers)
         {
-            var astronautHitbox = Hitbox;
-            bool isColliding = false; // Flag to check if there's a collision
+            // Define a new rectangle that represents only the top of the hitbox
+            Rectangle topHitbox = new Rectangle(
+                Hitbox.X,
+                Hitbox.Top,  // The top edge of the hitbox
+                Hitbox.Width,
+                1  // Height of 1 pixel to check just the top edge
+            );
 
-            if (ceilingLayers == null)
+            // Use CollisionDetector to check for collisions with the top hitbox
+            var collisionResult = _collisionDetector.CheckCollision(topHitbox, ceilingLayers);
+
+            if (collisionResult.isColliding)
             {
-                Console.WriteLine("Layers list is null.");
-                return;
-            }
+                Rectangle tileBounds = collisionResult.tileBounds;
 
-            foreach (var layer in ceilingLayers.Where(l => l.ZIndex == 3)) // Ceiling layer
-            {
-                if (layer.TileMapData == null || layer.TextureStore == null)
-                    continue;
-
-                foreach (var item in layer.TileMapData)
+                // Adjust position to be below the ceiling
+                if (velocity.Y < 0) // Only if moving upwards
                 {
-                    int tileIndex = item.Value.TileIndex - 1;
-                    if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
-                        continue;
-
-                    Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
-
-                    // Only check collision if the player's top is near the bottom of the tile (jumping or rising)
-                    if (astronautHitbox.Top < tileBounds.Bottom && astronautHitbox.Bottom > tileBounds.Top && astronautHitbox.Intersects(tileBounds))
-                    {
-                        // Handle collision response
-                        isColliding = true;
-
-                        // Adjust position to be below the ceiling
-                        if (velocity.Y < 0) // Only if moving upwards
-                        {
-                            velocity.Y = 0; // Stop upward movement
-                            position.Y = tileBounds.Bottom; // Set position to be below the ceiling
-                        }
-
-                        break; // Exit loop once collision is detected
-                    }
+                    velocity.Y = 0; // Stop upward movement
+                    position.Y = tileBounds.Bottom; // Set position to be below the ceiling
                 }
-
-                if (isColliding)
-                    break; // Exit outer loop if collision is detected
             }
         }
+
+
 
 
         private void SetAnimationState(string animationName, Texture2D texture)

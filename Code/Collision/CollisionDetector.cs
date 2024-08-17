@@ -8,13 +8,13 @@ namespace Code
 {
     public class CollisionDetector : ICollisionDetector
     {
-        public bool CheckCollision(Rectangle hitbox, List<TileMap> layers)
+        public (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers)
         {
-            foreach (var layer in layers.Where(l => l.ZIndex == 3)) // Assuming the floor layer has ZIndex = 3
+            foreach (var layer in layers.Where(l => l.ZIndex == 3))
             {
                 foreach (var item in layer.TileMapData)
                 {
-                    int tileIndex = item.Value.TileIndex - 1;  // Access TileIndex and subtract 1
+                    int tileIndex = item.Value.TileIndex - 1;
 
                     if (tileIndex < 0 || tileIndex >= layer.TextureStore.Count)
                         continue;
@@ -22,12 +22,12 @@ namespace Code
                     Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
                     if (hitbox.Intersects(tileBounds))
                     {
-                        return true;
+                        return (true, tileBounds);
                     }
                 }
             }
-
-            return false;
+            return (false, Rectangle.Empty);
         }
     }
+
 }

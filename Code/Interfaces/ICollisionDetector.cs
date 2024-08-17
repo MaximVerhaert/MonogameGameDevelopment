@@ -10,8 +10,10 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Code.Interfaces
 {
+    // Modify ICollisionDetector interface to return a tuple
     public interface ICollisionDetector
     {
-        bool CheckCollision(Rectangle hitbox, List<TileMap> layers);
+        (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers);
     }
+
 }

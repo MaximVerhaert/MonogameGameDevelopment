@@ -40,7 +40,8 @@ namespace Code
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _collisionDetector = new CollisionDetector();
+            _collisionDetector = new CollisionDetector(); // Initialize the collision detector
+
 
 
             // Load textures
@@ -114,7 +115,7 @@ namespace Code
             );
 
             // Pass the layers parameter to the Astronaut constructor
-            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, layers);
+            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, layers, _collisionDetector);
         }
 
 
@@ -183,10 +184,16 @@ namespace Code
         {
             var astronautHitbox = astronaut.Hitbox;
 
-            _isCollidingWithFloor = _collisionDetector.CheckCollision(astronautHitbox, layers);
+            // Get the collision result tuple (isColliding, tileBounds)
+            var collisionResult = _collisionDetector.CheckCollision(astronautHitbox, layers);
 
+            // Extract the isColliding boolean from the tuple
+            _isCollidingWithFloor = collisionResult.isColliding;
+
+            // Change the background color based on collision
             _backgroundColor = _isCollidingWithFloor ? Color.Red : Color.Green;
         }
+
 
 
 
