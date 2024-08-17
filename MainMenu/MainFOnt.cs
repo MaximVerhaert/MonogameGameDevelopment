@@ -11,11 +11,12 @@ namespace Code
         public enum MenuState
         {
             Main,
-            LevelSelect
+            LevelSelect,
+            Victory
         }
 
         private double _lastClickTime = 0;
-        private const double ClickCooldown = 100; // milliseconds
+        private const double ClickCooldown = 150; // milliseconds
 
         private class Button
         {
@@ -51,7 +52,9 @@ namespace Code
         private Texture2D _pixel;
         private List<Button> _mainButtons;
         private List<Button> _levelButtons;
+        private List<Button> _victoryButtons; // Add a list for victory buttons
         private MenuState _currentState;
+        private string _victoryMessage; // Field to store victory message
 
         public event EventHandler<string> PlayRequested;
         public event EventHandler ExitRequested;
@@ -86,6 +89,13 @@ namespace Code
                 new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Level 2", Color.LightGray),
                 new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back", Color.LightGray)
             };
+
+            // Initialize buttons for Victory state
+            _victoryButtons = new List<Button>
+            {
+                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Restart", Color.LightGray),
+                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back to Main Menu", Color.LightGray)
+            };
         }
 
         public void Update(MouseState mouseState, GameTime gameTime)
@@ -105,9 +115,11 @@ namespace Code
                 case MenuState.LevelSelect:
                     UpdateLevelSelect(mouseState);
                     break;
+                case MenuState.Victory:
+                    UpdateVictoryState(mouseState);
+                    break;
             }
         }
-
 
         private void UpdateMainMenu(MouseState mouseState)
         {
@@ -141,6 +153,27 @@ namespace Code
             }
         }
 
+        private void UpdateVictoryState(MouseState mouseState)
+        {
+            foreach (var button in _victoryButtons)
+            {
+                if (button.IsClicked(mouseState))
+                {
+                    if (button.Text == "Restart")
+                    {
+                        _currentState = MenuState.Main; // or use another method to restart the level
+                        _victoryMessage = null; // Clear victory message
+                        PlayRequested?.Invoke(this, "last"); // Restart the last level
+                    }
+                    else if (button.Text == "Back to Main Menu")
+                    {
+                        _currentState = MenuState.Main;
+                        _victoryMessage = null; // Clear victory message
+                    }
+                }
+            }
+        }
+
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
@@ -159,9 +192,37 @@ namespace Code
                         button.Draw(spriteBatch, _font, _pixel);
                     }
                     break;
+                case MenuState.Victory:
+                    // Draw the victory message
+                    if (!string.IsNullOrEmpty(_victoryMessage))
+                    {
+                        spriteBatch.DrawString(_font, _victoryMessage,
+                            new Vector2(spriteBatch.GraphicsDevice.Viewport.Width / 2,
+                                        spriteBatch.GraphicsDevice.Viewport.Height / 2 - 100),
+                            Color.Gold,
+                            0f,
+                            _font.MeasureString(_victoryMessage) / 2,
+                            1f,
+                            SpriteEffects.None,
+                            0f);
+                    }
+
+                    // Draw victory buttons
+                    foreach (var button in _victoryButtons)
+                    {
+                        button.Draw(spriteBatch, _font, _pixel);
+                    }
+                    break;
             }
 
             spriteBatch.End();
         }
+
+        public void ShowVictoryMessage(string message)
+        {
+            _victoryMessage = message;
+            _currentState = MenuState.Victory;
+        }
     }
 }
+

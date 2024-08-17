@@ -213,7 +213,7 @@ namespace Code
             bool wasGrounded = isGrounded;
             isGrounded = false;
 
-            var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, layers);
+            var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, layers, 3);
             if (collisionResult.isColliding)
             {
                 Rectangle tileBounds = collisionResult.tileBounds;
@@ -241,7 +241,7 @@ namespace Code
             Rectangle topHitbox = new Rectangle(Hitbox.X,Hitbox.Top,Hitbox.Width,1);
 
             // Use CollisionDetector to check for collisions with the top hitbox
-            var collisionResult = _collisionDetector.CheckCollision(topHitbox, layers);
+            var collisionResult = _collisionDetector.CheckCollision(topHitbox, layers, 3);
 
             if (collisionResult.isColliding)
             {

@@ -6,6 +6,8 @@ using Code.Map;
 using Code.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 
 namespace Code
 {
@@ -27,6 +29,9 @@ namespace Code
         // Use LevelLocationManager to fetch level starting positions
         private ILevelLocationManager _levelLocationManager;
         private Dictionary<string, Vector2> levelStartingPositions;
+
+        private bool _hasCompletedLevel; // Flag to indicate level completion
+
 
         public enum GameState
         {
@@ -66,6 +71,8 @@ namespace Code
             _mainMenu.ExitRequested += OnExitRequested;
 
             _currentState = GameState.Menu;
+            _hasCompletedLevel = false; // Initialize the flag
+
         }
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
@@ -113,6 +120,7 @@ namespace Code
         }
 
 
+
         protected override void Update(GameTime gameTime)
         {
             MouseState mouseState = Mouse.GetState();
@@ -134,11 +142,65 @@ namespace Code
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 _currentState = GameState.Menu;
+                return; // Exit early if returning to the menu
             }
 
             astronaut.Update(gameTime);
+
+            // Check for collision with DeployableFinish layer
+            Rectangle astronautHitbox = astronaut.Hitbox; // Assuming Astronaut has a Hitbox property
+            var (isColliding, tileBounds) = _collisionDetector.CheckCollision(astronautHitbox, _levelManager.Layers, 6);
+
+            if (isColliding)
+            {
+                Console.WriteLine("Collision detected with DeployableFinish. Transitioning to next level.");
+
+                // Determine the next level
+                string nextLevel = GetNextLevel(_lastPlayedLevel);
+                if(nextLevel == "lvl1")
+                {
+                    _mainMenu.ShowVictoryMessage("Congratulations! You Have beaten the game!");
+                    _currentState = GameState.Menu;
+                }
+                _lastPlayedLevel = nextLevel;
+                _levelManager.SetCurrentLevel(nextLevel);
+
+                // Reload textures if necessary
+                Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
+                Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
+
+                // Initialize game objects to reset position
+                InitializeGameObjects(idleTexture, runningTexture);
+
+                return; // Exit early to process the new level setup
+            }
+
             _camera.Update(astronaut.Position);
         }
+
+
+
+
+
+        private string GetNextLevel(string currentLevel)
+        {
+            // Extract all levels from the dictionary and remove any colons
+            var levels = levelStartingPositions.Keys
+                .Select(key => key.TrimEnd(':'))
+                .ToList();
+
+            // Find the index of the current level
+            int index = levels.IndexOf(currentLevel);
+
+            // Check if the index is valid and return the next level, or loop back to the first level
+            if (index >= 0 && index < levels.Count - 1)
+            {
+                return levels[index + 1];
+            }
+            return levels.First(); // Default to the first level if no next level is found
+        }
+
+
 
         protected override void Draw(GameTime gameTime)
         {

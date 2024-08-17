@@ -1,6 +1,7 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Collision",
     "\\Content",
     "\\Content\\Fonts",
     "\\Data",
@@ -8,6 +9,6 @@
     "\\MainMenu",
     "\\Map"
   ],
-  "SelectedNode": "\\Interfaces\\ILevelLocationManager.cs",
+  "SelectedNode": "\\MainMenu\\MainFOnt.cs",
   "PreviewInSolutionExplorer": false
 }

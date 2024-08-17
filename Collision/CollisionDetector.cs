@@ -9,14 +9,14 @@ namespace Code
 {
     public class CollisionDetector : ICollisionDetector
     {
-        public (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers)
+        public (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex)
         {
             if (layers == null)
             {
                 throw new ArgumentNullException(nameof(layers), "Layers cannot be null");
             }
 
-            foreach (var layer in layers.Where(l => l.ZIndex == 3))
+            foreach (var layer in layers.Where(l => l.ZIndex == layerIndex))
             {
                 foreach (var item in layer.TileMapData)
                 {
