@@ -80,6 +80,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/SpaceFont.spritefont
 
+#begin Sounds/complete.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/complete.wav
+
+#begin Sounds/game.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/game.wav
+
 #begin Sounds/laser-shot.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor

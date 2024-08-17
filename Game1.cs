@@ -33,6 +33,9 @@ namespace Code
 
         private bool _hasCompletedLevel; // Flag to indicate level completion
         private SoundEffect laserEffect;
+        private SoundEffect gameEffect;
+        private SoundEffect completeEffect;
+
         private float soundEffectVolume = 0.25f;
 
         public enum GameState
@@ -69,6 +72,8 @@ namespace Code
 
             SpriteFont font = Content.Load<SpriteFont>("Fonts/SpaceFont");
             laserEffect = Content.Load<SoundEffect>(@"Sounds\laser-shot");
+            gameEffect = Content.Load<SoundEffect>(@"Sounds\game");
+            completeEffect = Content.Load<SoundEffect>(@"Sounds\complete");
 
             _mainMenu = new MainMenu(GraphicsDevice, font, laserEffect);
             _mainMenu.PlayRequested += OnPlayRequested;
@@ -164,9 +169,12 @@ namespace Code
                 {
                     _mainMenu.ShowVictoryMessage("Congratulations! You Have beaten the game!");
                     _currentState = GameState.Menu;
+                    completeEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+
                 }
                 _lastPlayedLevel = nextLevel;
                 _levelManager.SetCurrentLevel(nextLevel);
+                // Play sound effect for loading a level
 
                 // Reload textures if necessary
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
@@ -235,6 +243,8 @@ namespace Code
 
             _lastPlayedLevel = levelName;
             _levelManager.SetCurrentLevel(levelName);
+            gameEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+
 
             // Reload textures if necessary, or simply reset position
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");

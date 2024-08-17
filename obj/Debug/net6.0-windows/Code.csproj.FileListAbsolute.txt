@@ -90,3 +90,5 @@ C:\Users\maxim\Desktop\game\Code\obj\Debug\net6.0-windows\Code.genruntimeconfig.
 C:\Users\maxim\Desktop\game\Code\obj\Debug\net6.0-windows\ref\Code.dll
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Fonts\SpaceFont.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\laser-shot.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\complete.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\game.xnb

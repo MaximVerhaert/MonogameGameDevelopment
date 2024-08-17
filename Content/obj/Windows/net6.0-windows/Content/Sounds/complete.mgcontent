@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav</SourceFile>
-  <SourceTime>2024-08-17T19:01:41.3295575+02:00</SourceTime>
-  <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/laser-shot.xnb</DestFile>
-  <DestTime>2024-08-17T19:15:50.0121698+02:00</DestTime>
+  <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav</SourceFile>
+  <SourceTime>2024-08-17T19:13:37.9754511+02:00</SourceTime>
+  <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/Sounds/complete.xnb</DestFile>
+  <DestTime>2024-08-17T19:18:56.0395806+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

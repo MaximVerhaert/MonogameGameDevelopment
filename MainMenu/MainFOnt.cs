@@ -41,7 +41,7 @@ namespace Code
             {
                 if (mouseState.LeftButton == ButtonState.Pressed && Bounds.Contains(mouseState.Position))
                 {
-                    _clickSound?.Play(); // Play the sound effect on click
+                    _clickSound?.Play(volume: 0.25f, pitch: 0f, pan: 0f); // Play the sound effect on click
                     return true;
                 }
                 return false;
