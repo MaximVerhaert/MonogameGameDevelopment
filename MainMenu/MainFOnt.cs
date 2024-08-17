@@ -1,0 +1,167 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
+
+namespace Code
+{
+    public class MainMenu
+    {
+        public enum MenuState
+        {
+            Main,
+            LevelSelect
+        }
+
+        private double _lastClickTime = 0;
+        private const double ClickCooldown = 100; // milliseconds
+
+        private class Button
+        {
+            public Rectangle Bounds { get; set; }
+            public string Text { get; set; }
+            public Color Color { get; set; }
+
+            public Button(Rectangle bounds, string text, Color color)
+            {
+                Bounds = bounds;
+                Text = text;
+                Color = color;
+            }
+
+            public bool IsClicked(MouseState mouseState)
+            {
+                return mouseState.LeftButton == ButtonState.Pressed && Bounds.Contains(mouseState.Position);
+            }
+
+            public void Draw(SpriteBatch spriteBatch, SpriteFont font, Texture2D pixel)
+            {
+                spriteBatch.Draw(pixel, Bounds, Color);
+                Vector2 textSize = font.MeasureString(Text);
+                Vector2 textPosition = new Vector2(
+                    Bounds.X + (Bounds.Width - textSize.X) / 2,
+                    Bounds.Y + (Bounds.Height - textSize.Y) / 2
+                );
+                spriteBatch.DrawString(font, Text, textPosition, Color.Black);
+            }
+        }
+
+        private SpriteFont _font;
+        private Texture2D _pixel;
+        private List<Button> _mainButtons;
+        private List<Button> _levelButtons;
+        private MenuState _currentState;
+
+        public event EventHandler<string> PlayRequested;
+        public event EventHandler ExitRequested;
+
+        public MainMenu(GraphicsDevice graphicsDevice, SpriteFont font)
+        {
+            _font = font;
+            _pixel = new Texture2D(graphicsDevice, 1, 1);
+            _pixel.SetData(new[] { Color.White });
+
+            InitializeButtons(graphicsDevice.Viewport);
+            _currentState = MenuState.Main;
+        }
+
+        private void InitializeButtons(Viewport viewport)
+        {
+            int buttonWidth = 200;
+            int buttonHeight = 50;
+            int centerX = viewport.Width / 2 - buttonWidth / 2;
+            int startY = viewport.Height / 2 - 100;
+
+            _mainButtons = new List<Button>
+            {
+                new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Play", Color.LightGray),
+                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Select Level", Color.LightGray),
+                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Exit", Color.LightGray)
+            };
+
+            _levelButtons = new List<Button>
+            {
+                new Button(new Rectangle(centerX, startY, buttonWidth, buttonHeight), "Level 1", Color.LightGray),
+                new Button(new Rectangle(centerX, startY + 70, buttonWidth, buttonHeight), "Level 2", Color.LightGray),
+                new Button(new Rectangle(centerX, startY + 140, buttonWidth, buttonHeight), "Back", Color.LightGray)
+            };
+        }
+
+        public void Update(MouseState mouseState, GameTime gameTime)
+        {
+            double currentTime = gameTime.TotalGameTime.TotalMilliseconds;
+            if (currentTime - _lastClickTime < ClickCooldown)
+            {
+                return; // Skip updates if within cooldown period
+            }
+            _lastClickTime = currentTime;
+
+            switch (_currentState)
+            {
+                case MenuState.Main:
+                    UpdateMainMenu(mouseState);
+                    break;
+                case MenuState.LevelSelect:
+                    UpdateLevelSelect(mouseState);
+                    break;
+            }
+        }
+
+
+        private void UpdateMainMenu(MouseState mouseState)
+        {
+            if (_mainButtons[0].IsClicked(mouseState))
+            {
+                PlayRequested?.Invoke(this, "last");
+            }
+            else if (_mainButtons[1].IsClicked(mouseState))
+            {
+                _currentState = MenuState.LevelSelect;
+            }
+            else if (_mainButtons[2].IsClicked(mouseState))
+            {
+                ExitRequested?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void UpdateLevelSelect(MouseState mouseState)
+        {
+            if (_levelButtons[0].IsClicked(mouseState))
+            {
+                PlayRequested?.Invoke(this, "lvl1");
+            }
+            else if (_levelButtons[1].IsClicked(mouseState))
+            {
+                PlayRequested?.Invoke(this, "lvl2");
+            }
+            else if (_levelButtons[2].IsClicked(mouseState))
+            {
+                _currentState = MenuState.Main;
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Begin();
+
+            switch (_currentState)
+            {
+                case MenuState.Main:
+                    foreach (var button in _mainButtons)
+                    {
+                        button.Draw(spriteBatch, _font, _pixel);
+                    }
+                    break;
+                case MenuState.LevelSelect:
+                    foreach (var button in _levelButtons)
+                    {
+                        button.Draw(spriteBatch, _font, _pixel);
+                    }
+                    break;
+            }
+
+            spriteBatch.End();
+        }
+    }
+}

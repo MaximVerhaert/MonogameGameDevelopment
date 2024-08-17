@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SourceFileCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Profile>Reach</Profile>
+  <Platform>Windows</Platform>
+  <Config />
+  <SourceFiles>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautRunning(64x64)x12.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Border(64x64)x11.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/space_bg(64x64)x5.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png</File>
+  </SourceFiles>
+  <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+  </DestFiles>
+</SourceFileCollection>
