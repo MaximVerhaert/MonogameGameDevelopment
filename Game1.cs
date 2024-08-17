@@ -1,11 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Code.Interfaces;
 using Code.Map;
 using Code.Input;
-using Code.Interfaces;
 using System;
-using System.Collections.Generic;  // Import this namespace for the dictionary
+using System.Collections.Generic;
 
 namespace Code
 {
@@ -24,13 +24,9 @@ namespace Code
         private double _lastClickTime = 0;
         private const double ClickCooldown = 200; // milliseconds
 
-        // Add the levelStartingPositions dictionary here
-        private Dictionary<string, Vector2> levelStartingPositions = new Dictionary<string, Vector2>
-        {
-            { "lvl1", new Vector2(128, 256+32) }, // Starting position for level 1
-            { "lvl2", new Vector2(128, 256+32) } // Starting position for level 1
-            // Add more levels as needed
-        };
+        // Use LevelLocationManager to fetch level starting positions
+        private ILevelLocationManager _levelLocationManager;
+        private Dictionary<string, Vector2> levelStartingPositions;
 
         public enum GameState
         {
@@ -51,6 +47,10 @@ namespace Code
             _collisionDetector = new CollisionDetector();
             _levelManager = new LevelManager(GraphicsDevice, _spriteBatch, Content);
             _camera = new Camera(GraphicsDevice.Viewport);
+
+            // Instantiate and use LevelLocationManager to read starting positions
+            _levelLocationManager = new LevelLocationManager();
+            levelStartingPositions = _levelLocationManager.ReadStartingPositions("../../../Data/map.csv");
 
             _levelManager.LoadLevels("../../../Data/map.csv");
             _levelManager.SetCurrentLevel(_lastPlayedLevel);
@@ -75,12 +75,31 @@ namespace Code
                 throw new InvalidOperationException("Layers must be initialized before creating Astronaut.");
             }
 
-            // Get the starting position for the current level
-            Vector2 startingPosition;
-            if (!levelStartingPositions.TryGetValue(_lastPlayedLevel, out startingPosition))
+            Vector2 startingPosition = new Vector2(128, 256); // Default position if not found
+            bool positionFound = false;
+
+            // Iterate through the dictionary to find a match
+            foreach (var kvp in levelStartingPositions)
             {
-                // Default starting position if not found
-                startingPosition = new Vector2(128, 256);
+                // Remove the colon from the key for comparison
+                string keyWithoutColon = kvp.Key.TrimEnd(':');
+
+                // Check if the current key (without colon) matches _lastPlayedLevel
+                if (keyWithoutColon.Equals(_lastPlayedLevel, StringComparison.OrdinalIgnoreCase))
+                {
+                    startingPosition = kvp.Value; // Update startingPosition
+                    positionFound = true;
+                    break; // Exit the loop once a match is found
+                }
+            }
+
+            if (!positionFound)
+            {
+                Console.WriteLine($"Starting position for level '{_lastPlayedLevel}' not found. Using default position.");
+            }
+            else
+            {
+                Console.WriteLine($"Starting position for level '{_lastPlayedLevel}' set to {startingPosition}.");
             }
 
             IMovementController movementController = new MovementController(
@@ -92,6 +111,7 @@ namespace Code
             // Pass the starting position to the Astronaut constructor
             astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, _levelManager.Layers, _collisionDetector, startingPosition);
         }
+
 
         protected override void Update(GameTime gameTime)
         {
