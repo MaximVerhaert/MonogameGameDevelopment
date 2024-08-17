@@ -5,6 +5,7 @@ using Code.Map;
 using Code.Input;
 using Code.Interfaces;
 using System;
+using System.Collections.Generic;  // Import this namespace for the dictionary
 
 namespace Code
 {
@@ -22,6 +23,14 @@ namespace Code
         private string _lastPlayedLevel = "lvl1";
         private double _lastClickTime = 0;
         private const double ClickCooldown = 200; // milliseconds
+
+        // Add the levelStartingPositions dictionary here
+        private Dictionary<string, Vector2> levelStartingPositions = new Dictionary<string, Vector2>
+        {
+            { "lvl1", new Vector2(128, 256+32) }, // Starting position for level 1
+            { "lvl2", new Vector2(128, 256+32) } // Starting position for level 1
+            // Add more levels as needed
+        };
 
         public enum GameState
         {
@@ -66,13 +75,22 @@ namespace Code
                 throw new InvalidOperationException("Layers must be initialized before creating Astronaut.");
             }
 
+            // Get the starting position for the current level
+            Vector2 startingPosition;
+            if (!levelStartingPositions.TryGetValue(_lastPlayedLevel, out startingPosition))
+            {
+                // Default starting position if not found
+                startingPosition = new Vector2(128, 256);
+            }
+
             IMovementController movementController = new MovementController(
                 initialSpeed: new Vector2(1, 1),
                 initialAcceleration: new Vector2(1f, 1f),
                 maxAcceleration: 5f
             );
 
-            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, _levelManager.Layers, _collisionDetector);
+            // Pass the starting position to the Astronaut constructor
+            astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, _levelManager.Layers, _collisionDetector, startingPosition);
         }
 
         protected override void Update(GameTime gameTime)
@@ -90,7 +108,6 @@ namespace Code
 
             base.Update(gameTime);
         }
-
 
         private void UpdateGame(GameTime gameTime)
         {
@@ -133,6 +150,13 @@ namespace Code
 
             _lastPlayedLevel = levelName;
             _levelManager.SetCurrentLevel(levelName);
+
+            // Reload textures if necessary, or simply reset position
+            Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
+            Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
+
+            InitializeGameObjects(idleTexture, runningTexture);
+
             _currentState = GameState.Playing;
         }
 

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png</SourceFile>
-  <SourceTime>2024-08-17T12:45:10.5388702+02:00</SourceTime>
+  <SourceTime>2024-08-17T13:34:28.4933125+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/AstronautIdle(64x64)x9.xnb</DestFile>
-  <DestTime>2024-08-17T12:47:52.1183001+02:00</DestTime>
+  <DestTime>2024-08-17T13:43:08.9575336+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

@@ -16,6 +16,7 @@ namespace Code
         private Rectangle idleHitbox = new Rectangle(4, 0, 21, 32);
         private Rectangle runningHitbox = new Rectangle(6, 0, 24, 32);
 
+
         public Rectangle Hitbox
         {
             get
@@ -72,10 +73,12 @@ namespace Code
         private ICollisionDetector _collisionDetector;
 
 
-        public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController, List<TileMap> layers, ICollisionDetector collisionDetector)
+        public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController, List<TileMap> layers, ICollisionDetector collisionDetector, Vector2 startingPosition)
         {
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
+            this.position = startingPosition; // Set the initial position
+
 
             animatie = new Animatie();
 
@@ -111,7 +114,6 @@ namespace Code
             animatie.Play("Idle");
             currentTexture = idleTexture;
 
-            position = new Vector2(128, 32 + 256 + 0);
             this.movementController = movementController;
             this.inputReader = reader;
             this.layers = layers ?? new List<TileMap>();
