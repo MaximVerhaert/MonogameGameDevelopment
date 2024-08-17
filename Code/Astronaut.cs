@@ -138,18 +138,6 @@ namespace Code
             return new Point(tileX, tileY);
         }
 
-
-        private void OnTileChange()
-        {
-            // Placeholder method for any action to be performed on tile change
-            // Recalculate gravity when the tile changes
-            isGrounded = false;  // Reset grounded state on tile change
-            velocity.Y = gravity; // Apply gravity initially
-
-            // You can also handle other tile change logic here
-            Console.WriteLine("Tile changed! Gravity recalculated."); ;
-        }
-
         private void Move(GameTime gameTime)
         {
             var direction = inputReader.ReadInput();
@@ -167,7 +155,8 @@ namespace Code
                 if (currentStandingTiles.Count == 0 || currentStandingTiles[0].TilePosition != newStandingTile)
                 {
                     // Call the method when the tile changes
-                    OnTileChange();
+                    isGrounded = false;  // Reset grounded state on tile change
+                    velocity.Y = gravity; // Apply gravity initially
 
                     // Update the current standing tile
                     currentStandingTiles.Clear(); // Clear previous standing tiles
@@ -219,20 +208,11 @@ namespace Code
 
         private void CheckCollisionWithFloorLayer(List<TileMap> floorLayers)
         {
-            // Define a new rectangle that represents only the bottom of the hitbox
-            Rectangle bottomHitbox = new Rectangle(
-                Hitbox.X,
-                Hitbox.Bottom - 1,  // Just the bottom edge of the hitbox
-                Hitbox.Width,
-                1  // Height of 1 pixel to check just the bottom edge
-            );
+            Rectangle bottomHitbox = new Rectangle(Hitbox.X, Hitbox.Bottom -1, Hitbox.Width, 1);
+            bool wasGrounded = isGrounded;
+            isGrounded = false;
 
-            bool wasGrounded = isGrounded; // Keep track of previous grounded state
-            isGrounded = false; // Reset grounded status before checking
-
-            // Use CollisionDetector to check for collisions with the bottom hitbox
             var collisionResult = _collisionDetector.CheckCollision(bottomHitbox, floorLayers);
-
             if (collisionResult.isColliding)
             {
                 Rectangle tileBounds = collisionResult.tileBounds;
@@ -249,20 +229,15 @@ namespace Code
             // Recalculate gravity only if the astronaut is no longer grounded
             if (!isGrounded && wasGrounded)
             {
-                OnTileChange();
+                isGrounded = false;
+                velocity.Y = gravity;
             }
         }
 
 
         private void CheckCollisionWithCeilingLayer(List<TileMap> ceilingLayers)
         {
-            // Define a new rectangle that represents only the top of the hitbox
-            Rectangle topHitbox = new Rectangle(
-                Hitbox.X,
-                Hitbox.Top,  // The top edge of the hitbox
-                Hitbox.Width,
-                1  // Height of 1 pixel to check just the top edge
-            );
+            Rectangle topHitbox = new Rectangle(Hitbox.X,Hitbox.Top,Hitbox.Width,1);
 
             // Use CollisionDetector to check for collisions with the top hitbox
             var collisionResult = _collisionDetector.CheckCollision(topHitbox, ceilingLayers);

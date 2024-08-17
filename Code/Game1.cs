@@ -178,57 +178,6 @@ namespace Code
             astronaut.Floorlayers = layers;
         }
 
-
-
-        private void CheckCollisionWithFloorLayer()
-        {
-            var astronautHitbox = astronaut.Hitbox;
-
-            // Get the collision result tuple (isColliding, tileBounds)
-            var collisionResult = _collisionDetector.CheckCollision(astronautHitbox, layers);
-
-            // Extract the isColliding boolean from the tuple
-            _isCollidingWithFloor = collisionResult.isColliding;
-
-            // Change the background color based on collision
-            _backgroundColor = _isCollidingWithFloor ? Color.Red : Color.Green;
-        }
-
-
-
-
-
-
-        private void DrawRectangleBorder(Rectangle rectangle, Color color, int borderThickness)
-        {
-            Texture2D pixel = CreateSinglePixelTexture(color);
-
-            // Draw the top border
-            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, borderThickness), color);
-
-            // Draw the bottom border
-            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y + rectangle.Height - borderThickness, rectangle.Width, borderThickness), color);
-
-            // Draw the left border
-            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X, rectangle.Y, borderThickness, rectangle.Height), color);
-
-            // Draw the right border
-            _spriteBatch.Draw(pixel, new Rectangle(rectangle.X + rectangle.Width - borderThickness, rectangle.Y, borderThickness, rectangle.Height), color);
-        }
-
-        private Texture2D CreateSinglePixelTexture(Color color)
-        {
-            Texture2D texture = new Texture2D(GraphicsDevice, 1, 1);
-            texture.SetData(new[] { color });
-            return texture;
-        }
-
-
-
-
-
-
-
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -241,8 +190,6 @@ namespace Code
 
             astronaut.Update(gameTime);
 
-            CheckCollisionWithFloorLayer();
-
             base.Update(gameTime);
         }
 
@@ -254,19 +201,14 @@ namespace Code
 
             // Draw cached map layers
             _spriteBatch.Draw(_mapRenderTarget, Vector2.Zero, Color.White);
-
             // Draw the astronaut
             astronaut.Draw(_spriteBatch);
-
             // Draw the hitbox border
-            DrawRectangleBorder(astronaut.Hitbox, Color.Red, 2); // Adjust thickness if needed
+            DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
-
-
-
     }
 }
