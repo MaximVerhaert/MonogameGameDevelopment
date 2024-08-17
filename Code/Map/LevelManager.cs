@@ -65,7 +65,15 @@ namespace Code.Map
 
                 // Setup render target and render layers
                 var viewport = _graphicsDevice.Viewport;
-                _mapRenderTarget = new RenderTarget2D(_graphicsDevice, viewport.Width, viewport.Height);
+
+                int maxX = (int)Layers.Max(l => l.TileMapData.Keys.Max(k => k.X));
+                int maxY = (int)Layers.Max(l => l.TileMapData.Keys.Max(k => k.Y));
+
+                // Ensure calculations are done with integers
+                int mapWidth = (maxX + 1) * 64;  // Use (maxX + 1) to include the last tile
+                int mapHeight = (maxY + 1) * 64; // Use (maxY + 1) to include the last tile
+
+                _mapRenderTarget = new RenderTarget2D(_graphicsDevice, mapWidth, mapHeight);
 
                 _graphicsDevice.SetRenderTarget(_mapRenderTarget);
                 _graphicsDevice.Clear(Color.Transparent);
@@ -102,30 +110,26 @@ namespace Code.Map
                     }
 
                     Rectangle destination = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
+                    Rectangle source = layer.TextureStore[tileIndex];
+                    float rotationRadians = MathHelper.ToRadians(rotation);
+                    Vector2 origin = new Vector2(source.Width / 2f, source.Height / 2f);
+                    Rectangle adjustedDestination = new Rectangle(
+                        destination.X + (int)origin.X,
+                        destination.Y + (int)origin.Y,
+                        destination.Width,
+                        destination.Height
+                    );
 
-                    if (destination.Intersects(visibleArea))
-                    {
-                        Rectangle source = layer.TextureStore[tileIndex];
-                        float rotationRadians = MathHelper.ToRadians(rotation);
-                        Vector2 origin = new Vector2(source.Width / 2f, source.Height / 2f);
-                        Rectangle adjustedDestination = new Rectangle(
-                            destination.X + (int)origin.X,
-                            destination.Y + (int)origin.Y,
-                            destination.Width,
-                            destination.Height
-                        );
-
-                        _spriteBatch.Draw(
-                            texture,
-                            destinationRectangle: adjustedDestination,
-                            sourceRectangle: source,
-                            color: Color.White,
-                            rotation: rotationRadians,
-                            origin: origin,
-                            effects: SpriteEffects.None,
-                            layerDepth: 0f
-                        );
-                    }
+                    _spriteBatch.Draw(
+                        texture,
+                        destinationRectangle: adjustedDestination,
+                        sourceRectangle: source,
+                        color: Color.White,
+                        rotation: rotationRadians,
+                        origin: origin,
+                        effects: SpriteEffects.None,
+                        layerDepth: 0f
+                    );
                 }
             }
         }
