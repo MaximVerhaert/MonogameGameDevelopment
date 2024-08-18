@@ -45,11 +45,19 @@ namespace Code
         private float soundEffectVolume = 0.25f;
 
         private int _points = 0;
-        private double _lastCollectedTime = 0; // To track time since last collection
+        private double _lastCollectedCoinTime = 0; // To track time since last collection
+
+        private int _health = 1;
+        private double _lastCollectedHealthTime = 0; // To track time since last collection
 
         private Texture2D _collectableSpriteSheet;
 
+        private Texture2D _healthSpriteSheet;
+
+
         private List<Vector2> _collectedCoinPositions = new List<Vector2>(); // Track positions of collected coins
+        private List<Vector2> _collectedHealthPositions = new List<Vector2>(); // Track positions of collected coins
+
 
 
         // Inside LoadContent
@@ -107,6 +115,8 @@ namespace Code
             _hasCompletedLevel = false; // Initialize the flag
 
             _collectableSpriteSheet = Content.Load<Texture2D>("CollectableForegroundGray(64x64)x2");
+            _healthSpriteSheet = Content.Load<Texture2D>("Health(64x64)x3");
+
 
         }
 
@@ -185,7 +195,7 @@ namespace Code
             astronaut.Update(gameTime);
 
             // Prevent multiple collections within 1 second
-            if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedTime > 1000)
+            if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedCoinTime > 1000)
             {
                 var (isCollidingWithItem, itemBounds, coinPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
 
@@ -199,10 +209,37 @@ namespace Code
 
                         collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
                         _points++; // Increase points
-                        _lastCollectedTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
+                        _lastCollectedCoinTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
 
                         // Optionally remove the coin from the level if required
                         // _levelManager.RemoveTileFromLayer(7, coinPos);
+                    }
+                }
+            }
+
+
+            // Prevent multiple collections within 1 second
+            if(_health <= 2)
+            {
+                if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedHealthTime > 1000)
+                {
+                    var (isCollidingWithItem, itemBounds, healthPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 8);
+
+                    if (isCollidingWithItem)
+                    {
+                        // Check if the coin has already been collected
+                        if (!_collectedHealthPositions.Contains(healthPos))
+                        {
+                            // Add the coin's position to the list for rendering the sprite
+                            _collectedHealthPositions.Add(healthPos);
+
+                            collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+                            _health++; // Increase points
+                            _lastCollectedHealthTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
+
+                            // Optionally remove the coin from the level if required
+                            // _levelManager.RemoveTileFromLayer(7, coinPos);
+                        }
                     }
                 }
             }
@@ -222,12 +259,15 @@ namespace Code
                     _currentState = GameState.Menu;
                     completeEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
                     _points = 0; // Reset points after the game ends
+                    _health = 1;
                 }
                 _lastPlayedLevel = nextLevel;
                 _levelManager.SetCurrentLevel(nextLevel);
 
                 // Clear collected coin positions
                 _collectedCoinPositions.Clear();
+
+                _collectedHealthPositions.Clear();
 
                 // Reload textures if necessary
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
@@ -296,18 +336,59 @@ namespace Code
                         _spriteBatch.Draw(_collectableSpriteSheet, worldPos, sourceRectangle, Color.White);
                     }
 
+                    // Draw the collected coin sprites
+                    foreach (var healthPos in _collectedHealthPositions)
+                    {
+                        // Calculate the position of the sprite in the spritesheet (second image)
+                        Rectangle sourceRectangle = new Rectangle(0, 0, 64, 64);
+
+                        // Convert tile position to world position (64x64 tile size)
+                        Vector2 worldPos = healthPos * 64;
+
+                        // Draw the coin sprite on top of the collected coin
+                        _spriteBatch.Draw(_collectableSpriteSheet, worldPos, sourceRectangle, Color.White);
+                    }
+
                     _spriteBatch.End();
 
                     // Draw the UI elements (e.g., points counter) on top of the game world
                     _uiBatch.Begin(); // Ensure _uiBatch.Begin does not overlap with _spriteBatch.Begin
+
                     SpriteFont font = Content.Load<SpriteFont>(@"Fonts\SpaceFont");
                     _uiBatch.DrawString(font, $"Points: {_points}", new Vector2(10, 10), Color.White);
+                    _uiBatch.DrawString(font, $"Health:", new Vector2(10, 70), Color.White);
+
+                    // Set source rectangle based on health value
+                    Rectangle sourceRectangleHealth = new Rectangle(0, 0, 0, 0); // Default to empty if health is not valid
+                    switch (_health)
+                    {
+                        case 1:
+                            sourceRectangleHealth = new Rectangle(0, 0, 64, 64);
+                            break;
+                        case 2:
+                            sourceRectangleHealth = new Rectangle(64, 0, 64, 64);
+                            break;
+                        case 3:
+                            sourceRectangleHealth = new Rectangle(128, 0, 64, 64);
+                            break;
+                        default:
+                            // Optionally handle other cases or leave sourceRectangle as empty
+                            break;
+                    }
+
+                    // Draw the health sprite if sourceRectangle is valid
+                    if (sourceRectangleHealth.Width > 0 && sourceRectangleHealth.Height > 0)
+                    {
+                        _uiBatch.Draw(_healthSpriteSheet, new Vector2(210, 60), sourceRectangleHealth, Color.White);
+                    }
+
                     _uiBatch.End();
                     break;
             }
 
             base.Draw(gameTime);
         }
+
 
 
 
@@ -325,6 +406,8 @@ namespace Code
 
             // Clear collected coin positions
             _collectedCoinPositions.Clear();
+
+            _collectedHealthPositions.Clear();
 
             // Reload textures if necessary, or simply reset position
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");

@@ -104,6 +104,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/SpaceFont.spritefont
 
+#begin Health(64x64)x3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Health(64x64)x3.png
+
 #begin Sounds/collect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
