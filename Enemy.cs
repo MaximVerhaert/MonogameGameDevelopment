@@ -20,7 +20,6 @@ namespace Code
         {
             get
             {
-                // Determine the base hitbox and offset based on the current animation
                 Rectangle baseHitbox;
                 int xOffset;
 
@@ -61,8 +60,10 @@ namespace Code
         private float jumpTimer = 0f;
         private float gravity = 9.81f; // Increase this value
 
+        private float directionChangeTimer = 0f;
+        private float directionChangeInterval = 2f; // Default to 2 seconds
 
-
+        private Random random = new Random(); // Random number generator for level 2
 
         public Enemy(Texture2D idleTexture, Texture2D runningTexture, Vector2 startingPosition, List<TileMap> layers, ICollisionDetector collisionDetector, int level)
         {
@@ -106,6 +107,82 @@ namespace Code
 
         public void Update(GameTime gameTime)
         {
+            switch (Level)
+            {
+                case 1:
+                    UpdateLevel1Behavior(gameTime);
+                    break;
+                case 2:
+                    HandleLevel2Behavior(gameTime);
+                    break;
+                case 3:
+                    UpdateLevel3Behavior(gameTime);
+                    break;
+            }
+
+            animatie.Update(gameTime);
+            CheckCollisionWithFloorLayer(layers);
+            CheckCollisionWithCeilingLayer(layers);
+        }
+
+        private void UpdateLevel1Behavior(GameTime gameTime)
+        {
+            directionChangeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (directionChangeTimer >= directionChangeInterval)
+            {
+                isFacingLeft = !isFacingLeft;
+                directionChangeTimer = 0f;
+            }
+
+            // Idle behavior
+            if (velocity.X == 0 && isGrounded)
+            {
+                SetAnimationState("Idle", idleTexture);
+            }
+            else if (isGrounded)
+            {
+                SetAnimationState("Running", runningTexture);
+            }
+        }
+
+        private void HandleLevel2Behavior(GameTime gameTime)
+        {
+            directionChangeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (directionChangeTimer >= directionChangeInterval)
+            {
+                isFacingLeft = !isFacingLeft;
+                directionChangeTimer = 0f;
+                // Set new random interval between 1 and 3 seconds
+                directionChangeInterval = (float)(random.NextDouble() * 2 + 1);
+            }
+
+            // Move left or right based on direction
+            velocity.X = isFacingLeft ? -10 : 10;
+
+            // Apply gravity
+            if (!isGrounded)
+            {
+                velocity.Y += gravity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            position.Y += velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Update animation state
+            if (velocity.X == 0 && isGrounded)
+            {
+                SetAnimationState("Idle", idleTexture);
+            }
+            else if (isGrounded)
+            {
+                SetAnimationState("Running", runningTexture);
+            }
+        }
+
+        private void UpdateLevel3Behavior(GameTime gameTime)
+        {
             jumpTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (jumpTimer >= jumpInterval)
@@ -115,13 +192,12 @@ namespace Code
             }
 
             Move(gameTime);
-            animatie.Update(gameTime);
-            CheckCollisionWithFloorLayer(layers);
-            CheckCollisionWithCeilingLayer(layers);
         }
 
         private void Move(GameTime gameTime)
         {
+            if (Level != 3) return;
+
             position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Apply gravity
@@ -142,18 +218,14 @@ namespace Code
                 SetAnimationState("Running", runningTexture);
             }
         }
+
         private void Jump(GameTime gameTime)
         {
             if (isGrounded)
             {
-                // Start the jump
                 velocity.Y = -jumpStrength;
                 isGrounded = false;
-
-                // Face left when jumping
                 isFacingLeft = true;
-
-                // Set the animation to running when jumping
                 SetAnimationState("Running", runningTexture);
             }
         }
@@ -172,21 +244,15 @@ namespace Code
 
                 if (!wasGrounded)
                 {
-                    // Reset velocity and position when landing
                     velocity.Y = 0;
                     position.Y = tileBounds.Top - Hitbox.Height;
-
-                    // Face right when landing
                     isFacingLeft = true;
-
-                    // Set the animation to idle when grounded
                     SetAnimationState("Idle", idleTexture);
                 }
             }
 
             if (!isGrounded && wasGrounded)
             {
-                // While in the air, apply gravity
                 isGrounded = false;
                 velocity.Y = gravity;
             }
@@ -202,19 +268,14 @@ namespace Code
                 Rectangle tileBounds = collisionResult.tileBounds;
                 isFacingLeft = false;
 
-
                 if (velocity.Y < 0)
                 {
-                    // When hitting the ceiling, reset vertical velocity and position
                     velocity.Y = 0;
                     position.Y = tileBounds.Bottom;
-
-                    // Set the animation to running when hitting the ceiling
                     SetAnimationState("Running", runningTexture);
                 }
             }
         }
-
 
         private void SetAnimationState(string animationName, Texture2D texture)
         {
