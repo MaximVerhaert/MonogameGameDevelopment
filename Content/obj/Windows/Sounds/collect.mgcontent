@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/collect.wav</SourceFile>
-  <SourceTime>2024-08-17T19:29:30.4141884+02:00</SourceTime>
+  <SourceTime>2024-08-18T10:57:15.7001676+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/collect.xnb</DestFile>
-  <DestTime>2024-08-18T10:35:42.9960118+02:00</DestTime>
+  <DestTime>2024-08-18T12:40:39.3736721+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

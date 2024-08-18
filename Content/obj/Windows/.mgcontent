@@ -11,6 +11,12 @@
     <File>C:/Users/maxim/Desktop/game/Code/Content/CollectableForegroundGray(64x64)x2.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy1Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy1Running(64x64)x4.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy2Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy2Running(64x64)x4.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy3Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy3Running(64x64)x4.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Health(64x64)x3.png</File>
     <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/collect.wav</File>
@@ -23,6 +29,12 @@
     <File>C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

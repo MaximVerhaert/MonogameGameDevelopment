@@ -19,6 +19,10 @@ namespace Code
         private SpriteBatch _uiBatch; // Add this field to your class
 
         private Astronaut astronaut;
+        private List<Enemy> enemies1 = new List<Enemy>();
+        private List<Enemy> enemies2 = new List<Enemy>();
+        private List<Enemy> enemies3 = new List<Enemy>();
+
         private Color _backgroundColor = Color.CornflowerBlue;
         private ILevelManager _levelManager;
         private ICollisionDetector _collisionDetector;
@@ -95,6 +99,24 @@ namespace Code
 
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
+
+            Texture2D enemy1IdleTexture = Content.Load<Texture2D>("Enemy1Idle(64x64)x2");
+            Texture2D enemy1RunningTexture = Content.Load<Texture2D>("Enemy1Running(64x64)x4");
+            Texture2D enemy2IdleTexture = Content.Load<Texture2D>("Enemy2Idle(64x64)x2");
+            Texture2D enemy2RunningTexture = Content.Load<Texture2D>("Enemy2Running(64x64)x4");
+            Texture2D enemy3IdleTexture = Content.Load<Texture2D>("Enemy3Idle(64x64)x2");
+            Texture2D enemy3RunningTexture = Content.Load<Texture2D>("Enemy3Running(64x64)x4");
+            enemies1 = new List<Enemy>{
+                new Enemy(enemy1IdleTexture, enemy1RunningTexture, new Vector2(384, 320), _levelManager.Layers, _collisionDetector),
+            };
+
+            enemies2 = new List<Enemy>{
+                new Enemy(enemy2IdleTexture, enemy2RunningTexture, new Vector2(768, 448), _levelManager.Layers, _collisionDetector),
+            };
+
+            enemies3 = new List<Enemy>{
+                new Enemy(enemy3IdleTexture, enemy3RunningTexture, new Vector2(832, 448), _levelManager.Layers, _collisionDetector),
+            };
 
             InitializeGameObjects(idleTexture, runningTexture);
 
@@ -193,6 +215,21 @@ namespace Code
             }
 
             astronaut.Update(gameTime);
+
+            foreach (var enemy in enemies1)
+            {
+                enemy.Update(gameTime);
+            }
+
+            foreach (var enemy in enemies2)
+            {
+                enemy.Update(gameTime);
+            }
+
+            foreach (var enemy in enemies3)
+            {
+                enemy.Update(gameTime);
+            }
 
             // Check for health drop and transition to end screen if health is 0 or below
             if (_health <= 0)
@@ -305,6 +342,22 @@ namespace Code
                     _spriteBatch.Begin(transformMatrix: _camera.Transform);
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
+
+                    foreach (var enemy in enemies1)
+                    {
+                        enemy.Draw(_spriteBatch);
+                    }
+
+                    foreach (var enemy in enemies2)
+                    {
+                        enemy.Draw(_spriteBatch);
+                    }
+
+                    foreach (var enemy in enemies3)
+                    {
+                        enemy.Draw(_spriteBatch);
+                    }
+
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
 
                     foreach (var coinPos in _collectedCoinPositions)

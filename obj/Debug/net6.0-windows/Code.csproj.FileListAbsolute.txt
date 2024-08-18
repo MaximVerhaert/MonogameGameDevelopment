@@ -98,3 +98,9 @@ C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\damage.
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\death.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\CollectableForegroundGray(64x64)x2.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Health(64x64)x3.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy1Idle(64x64)x2.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy1Running(64x64)x4.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy2Idle(64x64)x2.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy2Running(64x64)x4.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy3Idle(64x64)x2.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Enemy3Running(64x64)x4.xnb
