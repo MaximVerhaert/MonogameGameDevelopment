@@ -96,3 +96,4 @@ C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\CollectableFor
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\collect.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\damage.xnb
 C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\Sounds\death.xnb
+C:\Users\maxim\Desktop\game\Code\bin\Debug\net6.0-windows\Content\CollectableForegroundGray(64x64)x2.xnb

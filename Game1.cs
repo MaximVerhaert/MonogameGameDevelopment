@@ -47,6 +47,14 @@ namespace Code
         private int _points = 0;
         private double _lastCollectedTime = 0; // To track time since last collection
 
+        private Texture2D _collectableSpriteSheet;
+
+        private List<Vector2> _collectedCoinPositions = new List<Vector2>(); // Track positions of collected coins
+
+
+        // Inside LoadContent
+
+
 
         public enum GameState
         {
@@ -97,6 +105,9 @@ namespace Code
 
             _currentState = GameState.Menu;
             _hasCompletedLevel = false; // Initialize the flag
+
+            _collectableSpriteSheet = Content.Load<Texture2D>("CollectableForegroundGray(64x64)x2");
+
         }
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
@@ -161,6 +172,8 @@ namespace Code
             base.Update(gameTime);
         }
 
+
+
         private void UpdateGame(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -174,18 +187,28 @@ namespace Code
             // Prevent multiple collections within 1 second
             if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedTime > 1000)
             {
-                // Check for collision with items in layer 7
-                var (isCollidingWithItem, itemBounds) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
+                var (isCollidingWithItem, itemBounds, coinPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
+
                 if (isCollidingWithItem)
                 {
-                    collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-                    _points++; // Increase points
-                    _lastCollectedTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
+                    // Check if the coin has already been collected
+                    if (!_collectedCoinPositions.Contains(coinPos))
+                    {
+                        // Add the coin's position to the list for rendering the sprite
+                        _collectedCoinPositions.Add(coinPos);
+
+                        collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+                        _points++; // Increase points
+                        _lastCollectedTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
+
+                        // Optionally remove the coin from the level if required
+                        // _levelManager.RemoveTileFromLayer(7, coinPos);
+                    }
                 }
             }
 
             // Check for collision with DeployableFinish layer (layer 6)
-            var (isCollidingWithFinish, finishTileBounds) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 6);
+            var (isCollidingWithFinish, finishTileBounds, portal_pos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 6);
 
             if (isCollidingWithFinish)
             {
@@ -203,6 +226,9 @@ namespace Code
                 _lastPlayedLevel = nextLevel;
                 _levelManager.SetCurrentLevel(nextLevel);
 
+                // Clear collected coin positions
+                _collectedCoinPositions.Clear();
+
                 // Reload textures if necessary
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
                 Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
@@ -215,6 +241,7 @@ namespace Code
 
             _camera.Update(astronaut.Position);
         }
+
 
 
         private string GetNextLevel(string currentLevel)
@@ -255,6 +282,20 @@ namespace Code
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
+
+                    // Draw the collected coin sprites
+                    foreach (var coinPos in _collectedCoinPositions)
+                    {
+                        // Calculate the position of the sprite in the spritesheet (second image)
+                        Rectangle sourceRectangle = new Rectangle(64, 0, 64, 64);
+
+                        // Convert tile position to world position (64x64 tile size)
+                        Vector2 worldPos = coinPos * 64;
+
+                        // Draw the coin sprite on top of the collected coin
+                        _spriteBatch.Draw(_collectableSpriteSheet, worldPos, sourceRectangle, Color.White);
+                    }
+
                     _spriteBatch.End();
 
                     // Draw the UI elements (e.g., points counter) on top of the game world
@@ -270,6 +311,7 @@ namespace Code
 
 
 
+
         private void OnPlayRequested(object sender, string levelName)
         {
             if (levelName == "last")
@@ -281,6 +323,8 @@ namespace Code
             _levelManager.SetCurrentLevel(levelName);
             gameEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
 
+            // Clear collected coin positions
+            _collectedCoinPositions.Clear();
 
             // Reload textures if necessary, or simply reset position
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
@@ -290,6 +334,7 @@ namespace Code
 
             _currentState = GameState.Playing;
         }
+
 
         private void OnExitRequested(object sender, EventArgs e)
         {

@@ -9,7 +9,7 @@ namespace Code
 {
     public class CollisionDetector : ICollisionDetector
     {
-        public (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex)
+        public (bool isColliding, Rectangle tileBounds, Vector2 tilePosition) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex)
         {
             if (layers == null)
             {
@@ -26,15 +26,17 @@ namespace Code
                         continue;
 
                     Rectangle tileBounds = new Rectangle((int)item.Key.X * 64, (int)item.Key.Y * 64, 64, 64);
+
                     if (hitbox.Intersects(tileBounds))
                     {
-                        return (true, tileBounds);
+                        // Convert Vector2 to Point before returning
+                        Vector2 tilePosition = item.Key;
+                        return (true, tileBounds, tilePosition);
                     }
                 }
             }
-            return (false, Rectangle.Empty);
+            return (false, Rectangle.Empty, Vector2.Zero);
         }
-
     }
 }
 

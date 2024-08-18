@@ -13,7 +13,7 @@ namespace Code.Interfaces
     // Modify ICollisionDetector interface to return a tuple
     public interface ICollisionDetector
     {
-        (bool isColliding, Rectangle tileBounds) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex);
+        (bool isColliding, Rectangle tileBounds, Vector2 tilePosition) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex);
     }
 
 }
