@@ -19,9 +19,8 @@ namespace Code
         private SpriteBatch _uiBatch; // Add this field to your class
 
         private Astronaut astronaut;
-        private List<Enemy> enemies1 = new List<Enemy>();
-        private List<Enemy> enemies2 = new List<Enemy>();
-        private List<Enemy> enemies3 = new List<Enemy>();
+        private Dictionary<int, (Texture2D IdleTexture, Texture2D RunningTexture)> enemyTextures;
+
 
         private Color _backgroundColor = Color.CornflowerBlue;
         private ILevelManager _levelManager;
@@ -36,6 +35,8 @@ namespace Code
         // Use LevelLocationManager to fetch level starting positions
         private ILevelLocationManager _levelLocationManager;
         private Dictionary<string, Vector2> levelStartingPositions;
+        private List<Enemy> enemies = new List<Enemy>();
+
 
         private bool _hasCompletedLevel; // Flag to indicate level completion
         private SoundEffect laserEffect;
@@ -100,23 +101,18 @@ namespace Code
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
 
-            Texture2D enemy1IdleTexture = Content.Load<Texture2D>("Enemy1Idle(64x64)x2");
-            Texture2D enemy1RunningTexture = Content.Load<Texture2D>("Enemy1Running(64x64)x4");
-            Texture2D enemy2IdleTexture = Content.Load<Texture2D>("Enemy2Idle(64x64)x2");
-            Texture2D enemy2RunningTexture = Content.Load<Texture2D>("Enemy2Running(64x64)x4");
-            Texture2D enemy3IdleTexture = Content.Load<Texture2D>("Enemy3Idle(64x64)x2");
-            Texture2D enemy3RunningTexture = Content.Load<Texture2D>("Enemy3Running(64x64)x4");
-            enemies1 = new List<Enemy>{
-                new Enemy(enemy1IdleTexture, enemy1RunningTexture, new Vector2(384, 320), _levelManager.Layers, _collisionDetector),
+            enemyTextures = new Dictionary<int, (Texture2D, Texture2D)>{
+                { 1, (Content.Load<Texture2D>("Enemy1Idle(64x64)x2"), Content.Load<Texture2D>("Enemy1Running(64x64)x4")) },
+                { 2, (Content.Load<Texture2D>("Enemy2Idle(64x64)x2"), Content.Load<Texture2D>("Enemy2Running(64x64)x4")) },
+                { 3, (Content.Load<Texture2D>("Enemy3Idle(64x64)x2"), Content.Load<Texture2D>("Enemy3Running(64x64)x4")) }
             };
 
-            enemies2 = new List<Enemy>{
-                new Enemy(enemy2IdleTexture, enemy2RunningTexture, new Vector2(768, 448), _levelManager.Layers, _collisionDetector),
+            enemies = new List<Enemy>{
+                CreateEnemy(1, new Vector2(384, 320)),
+                CreateEnemy(2, new Vector2(768, 448)),
+                CreateEnemy(3, new Vector2(832, 448))
             };
 
-            enemies3 = new List<Enemy>{
-                new Enemy(enemy3IdleTexture, enemy3RunningTexture, new Vector2(832, 448), _levelManager.Layers, _collisionDetector),
-            };
 
             InitializeGameObjects(idleTexture, runningTexture);
 
@@ -141,6 +137,17 @@ namespace Code
 
 
         }
+
+        private Enemy CreateEnemy(int level, Vector2 position)
+        {
+            if (enemyTextures.TryGetValue(level, out var textures))
+            {
+                return new Enemy(textures.IdleTexture, textures.RunningTexture, position, _levelManager.Layers, _collisionDetector);
+            }
+
+            throw new ArgumentException($"No textures found for enemy level {level}");
+        }
+
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
         {
@@ -216,17 +223,7 @@ namespace Code
 
             astronaut.Update(gameTime);
 
-            foreach (var enemy in enemies1)
-            {
-                enemy.Update(gameTime);
-            }
-
-            foreach (var enemy in enemies2)
-            {
-                enemy.Update(gameTime);
-            }
-
-            foreach (var enemy in enemies3)
+            foreach (var enemy in enemies)
             {
                 enemy.Update(gameTime);
             }
@@ -343,25 +340,10 @@ namespace Code
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
 
-                    foreach (var enemy in enemies1)
+                    foreach (var enemy in enemies)
                     {
                         enemy.Draw(_spriteBatch);
                         DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
-
-                    }
-
-                    foreach (var enemy in enemies2)
-                    {
-                        enemy.Draw(_spriteBatch);
-                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
-
-                    }
-
-                    foreach (var enemy in enemies3)
-                    {
-                        enemy.Draw(_spriteBatch);
-                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
-
                     }
 
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
