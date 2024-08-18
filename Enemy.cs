@@ -13,7 +13,7 @@ namespace Code
     public class Enemy : IGameObject
     {
         public Vector2 Position => position;
-        private Rectangle idleHitbox = new Rectangle(4, 0, 21, 32);
+        private Rectangle idleHitbox = new Rectangle(4, 0, 24, 32);
         private Rectangle runningHitbox = new Rectangle(6, 0, 24, 32);
 
         public Rectangle Hitbox
@@ -77,6 +77,7 @@ namespace Code
             return new List<AnimationFrame>
             {
                 new AnimationFrame(new Rectangle(0, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(64, 0, 64, 64)),
                 // Add more frames as needed
             };
         }
@@ -86,6 +87,10 @@ namespace Code
             return new List<AnimationFrame>
             {
                 new AnimationFrame(new Rectangle(0, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(64, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(128, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(172, 0, 64, 64)),
+
                 // Add more frames as needed
             };
         }
@@ -102,12 +107,12 @@ namespace Code
         {
             // Simple enemy movement logic (e.g., move left and right)
             // Replace this with more complex AI or movement patterns as needed
-            velocity.X = isFacingLeft ? -1f : 1f;
+            //velocity.X = isFacingLeft ? -1f : 1f;
 
-            if (position.X < 0 || position.X > 800) // Example screen bounds
-            {
-                isFacingLeft = !isFacingLeft;
-            }
+            //if (position.X < 0 || position.X > 800) // Example screen bounds
+            //{
+            //    isFacingLeft = !isFacingLeft;
+            //}
 
             position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
 

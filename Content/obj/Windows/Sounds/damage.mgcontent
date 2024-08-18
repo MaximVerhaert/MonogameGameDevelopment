@@ -3,7 +3,7 @@
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/damage.wav</SourceFile>
   <SourceTime>2024-08-18T10:57:15.7041506+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/damage.xnb</DestFile>
-  <DestTime>2024-08-18T12:40:39.9754928+02:00</DestTime>
+  <DestTime>2024-08-18T15:26:03.7752462+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

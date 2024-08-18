@@ -3,7 +3,7 @@
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav</SourceFile>
   <SourceTime>2024-08-17T21:09:27.3057171+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Sounds/laser-shot.xnb</DestFile>
-  <DestTime>2024-08-18T12:40:41.0721444+02:00</DestTime>
+  <DestTime>2024-08-18T15:26:04.6229746+02:00</DestTime>
   <Importer>WavImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>SoundEffectProcessor</Processor>

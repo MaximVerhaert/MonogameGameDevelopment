@@ -346,16 +346,22 @@ namespace Code
                     foreach (var enemy in enemies1)
                     {
                         enemy.Draw(_spriteBatch);
+                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
+
                     }
 
                     foreach (var enemy in enemies2)
                     {
                         enemy.Draw(_spriteBatch);
+                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
+
                     }
 
                     foreach (var enemy in enemies3)
                     {
                         enemy.Draw(_spriteBatch);
+                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
+
                     }
 
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);

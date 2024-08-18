@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/Enemy1Running(64x64)x4.png</SourceFile>
-  <SourceTime>2024-08-18T12:31:01.8825192+02:00</SourceTime>
+  <SourceTime>2024-08-18T15:14:35.5921649+02:00</SourceTime>
   <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Enemy1Running(64x64)x4.xnb</DestFile>
-  <DestTime>2024-08-18T12:40:38.0084392+02:00</DestTime>
+  <DestTime>2024-08-18T15:26:02.3537007+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>
