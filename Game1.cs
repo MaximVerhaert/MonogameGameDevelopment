@@ -38,6 +38,7 @@ namespace Code
         // Use LevelLocationManager to fetch level starting positions
         private ILevelLocationManager _levelLocationManager;
         private Dictionary<string, Vector2> levelStartingPositions;
+        private Dictionary<string, List<(int Level, Vector2 Position)>> levelEnemies; // Declare levelEnemies
         private List<Enemy> enemies = new List<Enemy>();
 
 
@@ -97,6 +98,16 @@ namespace Code
             // Instantiate and use LevelLocationManager to read starting positions
             _levelLocationManager = new LevelLocationManager();
             levelStartingPositions = _levelLocationManager.ReadStartingPositions("../../../Data/map.csv");
+            levelEnemies = _levelLocationManager.ReadEnemies("../../../Data/map.csv");
+
+            enemyTextures = new Dictionary<int, (Texture2D, Texture2D)>
+{
+    { 1, (Content.Load<Texture2D>("Enemy1Idle(64x64)x2"), Content.Load<Texture2D>("Enemy1Running(64x64)x4")) },
+    { 2, (Content.Load<Texture2D>("Enemy2Idle(64x64)x2"), Content.Load<Texture2D>("Enemy2Running(64x64)x4")) },
+    { 3, (Content.Load<Texture2D>("Enemy3Idle(64x64)x2"), Content.Load<Texture2D>("Enemy3Running(64x64)x4")) }
+};
+
+
 
             _levelManager.LoadLevels("../../../Data/map.csv");
             _levelManager.SetCurrentLevel(_lastPlayedLevel);
@@ -104,19 +115,7 @@ namespace Code
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
 
-            enemyTextures = new Dictionary<int, (Texture2D, Texture2D)>{
-                { 1, (Content.Load<Texture2D>("Enemy1Idle(64x64)x2"), Content.Load<Texture2D>("Enemy1Running(64x64)x4")) },
-                { 2, (Content.Load<Texture2D>("Enemy2Idle(64x64)x2"), Content.Load<Texture2D>("Enemy2Running(64x64)x4")) },
-                { 3, (Content.Load<Texture2D>("Enemy3Idle(64x64)x2"), Content.Load<Texture2D>("Enemy3Running(64x64)x4")) }
-            };
-
-            enemies = new List<Enemy>{
-                CreateEnemy(1, new Vector2(384, 320)),
-                CreateEnemy(2, new Vector2(768, 448)),
-                CreateEnemy(3, new Vector2(832, 448))
-            };
-
-
+            // Initialize game objects, but don't load enemies here
             InitializeGameObjects(idleTexture, runningTexture);
 
             SpriteFont font = Content.Load<SpriteFont>(@"Fonts\SpaceFont");
@@ -137,19 +136,32 @@ namespace Code
 
             _collectableSpriteSheet = Content.Load<Texture2D>("CollectableForegroundGray(64x64)x2");
             _healthSpriteSheet = Content.Load<Texture2D>("Health(64x64)x3");
-
-
         }
 
         private Enemy CreateEnemy(int level, Vector2 position)
         {
-            if (enemyTextures.TryGetValue(level, out var textures))
+            if (enemyTextures == null)
             {
-                return new Enemy(textures.IdleTexture, textures.RunningTexture, position, _levelManager.Layers, _collisionDetector, level);
+                throw new InvalidOperationException("Enemy textures dictionary is not initialized.");
             }
 
-            throw new ArgumentException($"No textures found for enemy level {level}");
+            if (enemyTextures.TryGetValue(level, out var textures))
+            {
+                if (textures.IdleTexture == null || textures.RunningTexture == null)
+                {
+                    throw new InvalidOperationException($"Textures for enemy level {level} are not loaded correctly.");
+                }
+
+                Console.WriteLine($"Creating enemy at position: {position}");
+                return new Enemy(textures.IdleTexture, textures.RunningTexture, position, _levelManager.Layers, _collisionDetector, level);
+            }
+            else
+            {
+                throw new ArgumentException($"No textures found for enemy level {level}");
+            }
         }
+
+
 
 
 
@@ -196,7 +208,6 @@ namespace Code
             // Pass the starting position to the Astronaut constructor
             astronaut = new Astronaut(idleTexture, runningTexture, new KeyBoardReader(), movementController, _levelManager.Layers, _collisionDetector, startingPosition);
         }
-
 
 
         protected override void Update(GameTime gameTime)
@@ -315,6 +326,33 @@ namespace Code
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
                 Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
                 InitializeGameObjects(idleTexture, runningTexture);
+
+                // Clear existing enemies
+                enemies.Clear();
+
+
+                // Load new enemies for the current level
+                foreach (var xx in levelEnemies)
+                {
+                    if (xx.Key.Split(':')[0] == _lastPlayedLevel)
+                    {
+                        foreach (var enemy in xx.Value)
+                        {
+                            Console.WriteLine($"Enemy Level: {enemy.Level}, Position: {enemy.Position}");
+
+                            Enemy newEnemy = CreateEnemy(enemy.Level, enemy.Position);
+                            if (newEnemy != null)
+                            {
+                                enemies.Add(newEnemy);
+                                Console.WriteLine($"Added enemy of level {enemy.Level} at position {enemy.Position}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Failed to create enemy of level {enemy.Level} at position {enemy.Position}");
+                            }
+                        }
+                    }
+                }
                 return;
             }
 
@@ -359,10 +397,13 @@ namespace Code
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
 
-                    foreach (var enemy in enemies)
+                    if (enemies != null)
                     {
-                        enemy.Draw(_spriteBatch);
-                        DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
+                        foreach (var enemy in enemies)
+                        {
+                            enemy.Draw(_spriteBatch);
+                            DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
+                        }
                     }
 
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
@@ -431,19 +472,46 @@ namespace Code
             _levelManager.SetCurrentLevel(levelName);
             gameEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
 
-            // Clear collected coin positions
+            // Clear collected coin positions and health positions
             _collectedCoinPositions.Clear();
-
             _collectedHealthPositions.Clear();
 
-            // Reload textures if necessary, or simply reset position
+            // Clear existing enemies
+            enemies.Clear();
+
+
+            // Load new enemies for the current level
+            foreach (var xx in levelEnemies)
+            {
+                if (xx.Key.Split(':')[0] == _lastPlayedLevel)
+                {
+                    foreach (var enemy in xx.Value)
+                    {
+                        Console.WriteLine($"Enemy Level: {enemy.Level}, Position: {enemy.Position}");
+
+                        Enemy newEnemy = CreateEnemy(enemy.Level, enemy.Position);
+                        if (newEnemy != null)
+                        {
+                            enemies.Add(newEnemy);
+                            Console.WriteLine($"Added enemy of level {enemy.Level} at position {enemy.Position}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to create enemy of level {enemy.Level} at position {enemy.Position}");
+                        }
+                    }
+                }
+            }
+
+            // Reload astronaut's starting position
             Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
             Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
-
             InitializeGameObjects(idleTexture, runningTexture);
 
             _currentState = GameState.Playing;
         }
+
+
 
 
         private void OnExitRequested(object sender, EventArgs e)
