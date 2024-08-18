@@ -31,6 +31,9 @@ namespace Code
         private string _lastPlayedLevel = "lvl1";
         private double _lastClickTime = 0;
         private const double ClickCooldown = 200; // milliseconds
+        private double _lastEnemyCollisionTime = 0;
+        private const double EnemyCollisionCooldown = 3000; // 3 seconds in milliseconds
+
 
         // Use LevelLocationManager to fetch level starting positions
         private ILevelLocationManager _levelLocationManager;
@@ -142,11 +145,12 @@ namespace Code
         {
             if (enemyTextures.TryGetValue(level, out var textures))
             {
-                return new Enemy(textures.IdleTexture, textures.RunningTexture, position, _levelManager.Layers, _collisionDetector);
+                return new Enemy(textures.IdleTexture, textures.RunningTexture, position, _levelManager.Layers, _collisionDetector, level);
             }
 
             throw new ArgumentException($"No textures found for enemy level {level}");
         }
+
 
 
         private void InitializeGameObjects(Texture2D idleTexture, Texture2D runningTexture)
@@ -268,6 +272,21 @@ namespace Code
                         collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
                         _health++;
                         _lastCollectedHealthTime = gameTime.TotalGameTime.TotalMilliseconds;
+                    }
+                }
+            }
+
+            // Check for enemy collision with cooldown
+            if (gameTime.TotalGameTime.TotalMilliseconds - _lastEnemyCollisionTime > EnemyCollisionCooldown)
+            {
+                foreach (var enemy in enemies)
+                {
+                    if (_collisionDetector.CheckCollision(astronaut.Hitbox, enemy.Hitbox))
+                    {
+                        _health -= enemy.Level; // Reduce health based on enemy level
+                        _lastEnemyCollisionTime = gameTime.TotalGameTime.TotalMilliseconds;
+                        damageEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+                        break; // Exit the loop after the first collision is detected
                     }
                 }
             }

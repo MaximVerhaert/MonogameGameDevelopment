@@ -55,9 +55,12 @@ namespace Code
         private bool isGrounded = false;
         private List<TileMap> layers;
         private ICollisionDetector _collisionDetector;
+        public int Level { get; private set; }
 
-        public Enemy(Texture2D idleTexture, Texture2D runningTexture, Vector2 startingPosition, List<TileMap> layers, ICollisionDetector collisionDetector)
+
+        public Enemy(Texture2D idleTexture, Texture2D runningTexture, Vector2 startingPosition, List<TileMap> layers, ICollisionDetector collisionDetector, int level)
         {
+            Level = level;
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
             this.position = startingPosition;

@@ -14,6 +14,8 @@ namespace Code.Interfaces
     public interface ICollisionDetector
     {
         (bool isColliding, Rectangle tileBounds, Vector2 tilePosition) CheckCollision(Rectangle hitbox, List<TileMap> layers, int layerIndex);
+        // Overloaded method for checking collisions between two rectangles (e.g., player and enemy)
+        bool CheckCollision(Rectangle hitbox1, Rectangle hitbox2);
     }
 
 }

@@ -1,6 +1,7 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Collision",
     "\\Content",
     "\\Content\\Fonts",
     "\\Content\\Sounds",
@@ -9,5 +10,6 @@
     "\\MainMenu",
     "\\Map"
   ],
+  "SelectedNode": "\\Collision\\CollisionDetector.cs",
   "PreviewInSolutionExplorer": false
 }

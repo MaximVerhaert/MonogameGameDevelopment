@@ -37,6 +37,12 @@ namespace Code
             }
             return (false, Rectangle.Empty, Vector2.Zero);
         }
+
+        // New method for rectangle collision detection
+        public bool CheckCollision(Rectangle hitbox1, Rectangle hitbox2)
+        {
+            return hitbox1.Intersects(hitbox2);
+        }
     }
 }
 
