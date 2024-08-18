@@ -194,52 +194,46 @@ namespace Code
 
             astronaut.Update(gameTime);
 
-            // Prevent multiple collections within 1 second
+            // Check for health drop and transition to end screen if health is 0 or below
+            if (_health <= 0)
+            {
+                _mainMenu.ShowVictoryMessage("You died");
+                _currentState = GameState.Menu; // Switch to menu to show end screen
+                deathEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+                _points = 0; // Optionally reset points
+                _health = 1; // Optionally reset health
+                return; // Exit early to process the end screen
+            }
+
+            // Existing coin and health collection logic
             if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedCoinTime > 1000)
             {
                 var (isCollidingWithItem, itemBounds, coinPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 7);
 
                 if (isCollidingWithItem)
                 {
-                    // Check if the coin has already been collected
                     if (!_collectedCoinPositions.Contains(coinPos))
                     {
-                        // Add the coin's position to the list for rendering the sprite
                         _collectedCoinPositions.Add(coinPos);
-
                         collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-                        _points++; // Increase points
-                        _lastCollectedCoinTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
-
-                        // Optionally remove the coin from the level if required
-                        // _levelManager.RemoveTileFromLayer(7, coinPos);
+                        _points++;
+                        _lastCollectedCoinTime = gameTime.TotalGameTime.TotalMilliseconds;
                     }
                 }
             }
 
-
-            // Prevent multiple collections within 1 second
-            if(_health <= 2)
+            if (_health <= 2 && gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedHealthTime > 1000)
             {
-                if (gameTime.TotalGameTime.TotalMilliseconds - _lastCollectedHealthTime > 1000)
+                var (isCollidingWithItem, itemBounds, healthPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 8);
+
+                if (isCollidingWithItem)
                 {
-                    var (isCollidingWithItem, itemBounds, healthPos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 8);
-
-                    if (isCollidingWithItem)
+                    if (!_collectedHealthPositions.Contains(healthPos))
                     {
-                        // Check if the coin has already been collected
-                        if (!_collectedHealthPositions.Contains(healthPos))
-                        {
-                            // Add the coin's position to the list for rendering the sprite
-                            _collectedHealthPositions.Add(healthPos);
-
-                            collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-                            _health++; // Increase points
-                            _lastCollectedHealthTime = gameTime.TotalGameTime.TotalMilliseconds; // Update last collected time
-
-                            // Optionally remove the coin from the level if required
-                            // _levelManager.RemoveTileFromLayer(7, coinPos);
-                        }
+                        _collectedHealthPositions.Add(healthPos);
+                        collectEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
+                        _health++;
+                        _lastCollectedHealthTime = gameTime.TotalGameTime.TotalMilliseconds;
                     }
                 }
             }
@@ -250,38 +244,29 @@ namespace Code
             if (isCollidingWithFinish)
             {
                 Console.WriteLine("Collision detected with DeployableFinish. Transitioning to next level.");
-
-                // Determine the next level
                 string nextLevel = GetNextLevel(_lastPlayedLevel);
                 if (nextLevel == "lvl1")
                 {
                     _mainMenu.ShowVictoryMessage($"Congratulations! You have beaten the game with {_points} points!");
                     _currentState = GameState.Menu;
                     completeEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-                    _points = 0; // Reset points after the game ends
+                    _points = 0;
                     _health = 1;
                 }
                 _lastPlayedLevel = nextLevel;
                 _levelManager.SetCurrentLevel(nextLevel);
 
-                // Clear collected coin positions
                 _collectedCoinPositions.Clear();
-
                 _collectedHealthPositions.Clear();
 
-                // Reload textures if necessary
                 Texture2D idleTexture = Content.Load<Texture2D>("AstronautIdle(64x64)x9");
                 Texture2D runningTexture = Content.Load<Texture2D>("AstronautRunning(64x64)x12");
-
-                // Initialize game objects to reset position
                 InitializeGameObjects(idleTexture, runningTexture);
-
-                return; // Exit early to process the new level setup
+                return;
             }
 
             _camera.Update(astronaut.Position);
         }
-
 
 
         private string GetNextLevel(string currentLevel)
@@ -312,54 +297,39 @@ namespace Code
             {
                 case GameState.Menu:
                     _spriteBatch.Begin();
-                    _mainMenu.Draw(_spriteBatch); // Ensure MainMenu.Draw does not call Begin again
+                    _mainMenu.Draw(_spriteBatch);
                     _spriteBatch.End();
                     break;
 
                 case GameState.Playing:
-                    // Draw the game world with camera transformation
                     _spriteBatch.Begin(transformMatrix: _camera.Transform);
                     _spriteBatch.Draw(_levelManager.MapRenderTarget, Vector2.Zero, Color.White);
                     astronaut.Draw(_spriteBatch);
                     DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
 
-                    // Draw the collected coin sprites
                     foreach (var coinPos in _collectedCoinPositions)
                     {
-                        // Calculate the position of the sprite in the spritesheet (second image)
                         Rectangle sourceRectangle = new Rectangle(64, 0, 64, 64);
-
-                        // Convert tile position to world position (64x64 tile size)
                         Vector2 worldPos = coinPos * 64;
-
-                        // Draw the coin sprite on top of the collected coin
                         _spriteBatch.Draw(_collectableSpriteSheet, worldPos, sourceRectangle, Color.White);
                     }
 
-                    // Draw the collected coin sprites
                     foreach (var healthPos in _collectedHealthPositions)
                     {
-                        // Calculate the position of the sprite in the spritesheet (second image)
                         Rectangle sourceRectangle = new Rectangle(0, 0, 64, 64);
-
-                        // Convert tile position to world position (64x64 tile size)
                         Vector2 worldPos = healthPos * 64;
-
-                        // Draw the coin sprite on top of the collected coin
                         _spriteBatch.Draw(_collectableSpriteSheet, worldPos, sourceRectangle, Color.White);
                     }
 
                     _spriteBatch.End();
 
-                    // Draw the UI elements (e.g., points counter) on top of the game world
-                    _uiBatch.Begin(); // Ensure _uiBatch.Begin does not overlap with _spriteBatch.Begin
+                    _uiBatch.Begin();
 
                     SpriteFont font = Content.Load<SpriteFont>(@"Fonts\SpaceFont");
                     _uiBatch.DrawString(font, $"Points: {_points}", new Vector2(10, 10), Color.White);
                     _uiBatch.DrawString(font, $"Health:", new Vector2(10, 70), Color.White);
 
-                    // Set source rectangle based on health value
-                    Rectangle sourceRectangleHealth = new Rectangle(0, 0, 0, 0); // Default to empty if health is not valid
+                    Rectangle sourceRectangleHealth = new Rectangle(0, 0, 0, 0);
                     switch (_health)
                     {
                         case 1:
@@ -372,11 +342,9 @@ namespace Code
                             sourceRectangleHealth = new Rectangle(128, 0, 64, 64);
                             break;
                         default:
-                            // Optionally handle other cases or leave sourceRectangle as empty
                             break;
                     }
 
-                    // Draw the health sprite if sourceRectangle is valid
                     if (sourceRectangleHealth.Width > 0 && sourceRectangleHealth.Height > 0)
                     {
                         _uiBatch.Draw(_healthSpriteSheet, new Vector2(210, 60), sourceRectangleHealth, Color.White);
@@ -388,7 +356,6 @@ namespace Code
 
             base.Draw(gameTime);
         }
-
 
 
 
