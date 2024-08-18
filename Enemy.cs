@@ -50,12 +50,18 @@ namespace Code
         private Animatie animatie;
         private Vector2 position;
         private Vector2 velocity;
-        private float gravity = 9.8f;
         private bool isFacingLeft = false;
         private bool isGrounded = false;
         private List<TileMap> layers;
         private ICollisionDetector _collisionDetector;
         public int Level { get; private set; }
+
+        private float jumpStrength = 60f;
+        private float jumpInterval = 0.5f; // Time in seconds between jumps
+        private float jumpTimer = 0f;
+        private float gravity = 9.81f; // Increase this value
+
+
 
 
         public Enemy(Texture2D idleTexture, Texture2D runningTexture, Vector2 startingPosition, List<TileMap> layers, ICollisionDetector collisionDetector, int level)
@@ -92,7 +98,7 @@ namespace Code
                 new AnimationFrame(new Rectangle(0, 0, 64, 64)),
                 new AnimationFrame(new Rectangle(64, 0, 64, 64)),
                 new AnimationFrame(new Rectangle(128, 0, 64, 64)),
-                new AnimationFrame(new Rectangle(172, 0, 64, 64)),
+                new AnimationFrame(new Rectangle(192, 0, 64, 64)),
 
                 // Add more frames as needed
             };
@@ -100,6 +106,14 @@ namespace Code
 
         public void Update(GameTime gameTime)
         {
+            jumpTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (jumpTimer >= jumpInterval)
+            {
+                Jump(gameTime);
+                jumpTimer = 0f;
+            }
+
             Move(gameTime);
             animatie.Update(gameTime);
             CheckCollisionWithFloorLayer(layers);
@@ -108,15 +122,6 @@ namespace Code
 
         private void Move(GameTime gameTime)
         {
-            // Simple enemy movement logic (e.g., move left and right)
-            // Replace this with more complex AI or movement patterns as needed
-            //velocity.X = isFacingLeft ? -1f : 1f;
-
-            //if (position.X < 0 || position.X > 800) // Example screen bounds
-            //{
-            //    isFacingLeft = !isFacingLeft;
-            //}
-
             position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Apply gravity
@@ -137,6 +142,21 @@ namespace Code
                 SetAnimationState("Running", runningTexture);
             }
         }
+        private void Jump(GameTime gameTime)
+        {
+            if (isGrounded)
+            {
+                // Start the jump
+                velocity.Y = -jumpStrength;
+                isGrounded = false;
+
+                // Face left when jumping
+                isFacingLeft = true;
+
+                // Set the animation to running when jumping
+                SetAnimationState("Running", runningTexture);
+            }
+        }
 
         private void CheckCollisionWithFloorLayer(List<TileMap> layers)
         {
@@ -152,13 +172,21 @@ namespace Code
 
                 if (!wasGrounded)
                 {
+                    // Reset velocity and position when landing
                     velocity.Y = 0;
                     position.Y = tileBounds.Top - Hitbox.Height;
+
+                    // Face right when landing
+                    isFacingLeft = true;
+
+                    // Set the animation to idle when grounded
+                    SetAnimationState("Idle", idleTexture);
                 }
             }
 
             if (!isGrounded && wasGrounded)
             {
+                // While in the air, apply gravity
                 isGrounded = false;
                 velocity.Y = gravity;
             }
@@ -172,14 +200,21 @@ namespace Code
             if (collisionResult.isColliding)
             {
                 Rectangle tileBounds = collisionResult.tileBounds;
+                isFacingLeft = false;
+
 
                 if (velocity.Y < 0)
                 {
+                    // When hitting the ceiling, reset vertical velocity and position
                     velocity.Y = 0;
                     position.Y = tileBounds.Bottom;
+
+                    // Set the animation to running when hitting the ceiling
+                    SetAnimationState("Running", runningTexture);
                 }
             }
         }
+
 
         private void SetAnimationState(string animationName, Texture2D texture)
         {
