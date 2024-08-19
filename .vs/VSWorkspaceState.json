@@ -2,7 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\Character",
-    "\\Data"
+    "\\Data",
+    "\\State",
+    "\\Strategy"
   ],
+  "SelectedNode": "\\Strategy\\JumpingMovement.cs",
   "PreviewInSolutionExplorer": false
 }
