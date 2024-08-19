@@ -139,7 +139,7 @@ namespace Code
             return new Point(tileX, tileY);
         }
 
-        private void Move(GameTime gameTime)
+        public void Move(GameTime gameTime)
         {
             var direction = inputReader.ReadInput();
 
@@ -209,7 +209,7 @@ namespace Code
 
         private void CheckCollisionWithFloorLayer(List<TileMap> layers)
         {
-            Rectangle bottomHitbox = new Rectangle(Hitbox.X, Hitbox.Bottom -1, Hitbox.Width, 1);
+            Rectangle bottomHitbox = new Rectangle(Hitbox.X, Hitbox.Bottom - 1, Hitbox.Width, 1);
             bool wasGrounded = isGrounded;
             isGrounded = false;
 
@@ -238,7 +238,7 @@ namespace Code
 
         private void CheckCollisionWithCeilingLayer(List<TileMap> layers)
         {
-            Rectangle topHitbox = new Rectangle(Hitbox.X,Hitbox.Top,Hitbox.Width,1);
+            Rectangle topHitbox = new Rectangle(Hitbox.X, Hitbox.Top, Hitbox.Width, 1);
 
             // Use CollisionDetector to check for collisions with the top hitbox
             var collisionResult = _collisionDetector.CheckCollision(topHitbox, layers, 3);

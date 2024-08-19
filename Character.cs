@@ -109,7 +109,6 @@ namespace Code
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            // Default implementation (if any)
         }
         public Rectangle Hitbox
         {

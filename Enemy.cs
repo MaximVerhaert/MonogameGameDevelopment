@@ -164,7 +164,11 @@ namespace Code
 
         private void Move(GameTime gameTime)
         {
-            position = movementStrategy.Move(position, velocity, isGrounded, gameTime);
+            // Define direction based on whether the enemy is facing left or right
+            Vector2 direction = isFacingLeft ? new Vector2(-1, 0) : new Vector2(1, 0);
+
+            // Call the Move method with all required parameters
+            position = movementStrategy.Move(position, velocity, isGrounded, gameTime, direction, jumpStrength);
 
             // Update animation state
             if (velocity.X == 0 && isGrounded)
@@ -176,6 +180,7 @@ namespace Code
                 SetAnimationState("Running", runningTexture);
             }
         }
+
 
 
         private void Jump(GameTime gameTime)

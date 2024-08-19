@@ -10,7 +10,7 @@ namespace Code.Strategy
 {
     public class JumpingMovement : IMovementStrategy
     {
-        public Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime)
+        public Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime, Vector2 direction, float jumpStrength)
         {
             if (isGrounded)
                 velocity.Y = -60f;

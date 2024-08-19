@@ -9,7 +9,8 @@ namespace Code.Strategy
 {
     public interface IMovementStrategy
     {
-        Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime);
+        Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime, Vector2 direction, float jumpStrength);
     }
+
 }
 

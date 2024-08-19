@@ -9,7 +9,7 @@ namespace Code.Strategy
 {
     public class RunningMovement : IMovementStrategy
     {
-        public Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime)
+        public Vector2 Move(Vector2 position, Vector2 velocity, bool isGrounded, GameTime gameTime, Vector2 direction, float jumpStrength)
         {
             // Running movement logic here
             // If needed, you can use the isGrounded parameter to adjust the behavior

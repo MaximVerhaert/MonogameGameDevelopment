@@ -3,10 +3,10 @@
     "",
     "\\Animation",
     "\\Collision",
-    "\\Content\\Fonts",
-    "\\Content\\Sounds",
-    "\\Data"
+    "\\Data",
+    "\\State",
+    "\\Strategy"
   ],
-  "SelectedNode": "\\Data\\map.csv",
+  "SelectedNode": "\\State\\NormalState.cs",
   "PreviewInSolutionExplorer": false
 }
