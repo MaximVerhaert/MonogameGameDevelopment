@@ -4,29 +4,29 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautIdle(64x64)x9.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/AstronautRunning(64x64)x12.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Border(64x64)x11.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/CollectableForeground(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/CollectableForegroundGray(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableBackground(64x64)x3.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/DeployableForeground(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy1Idle(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy1Running(64x64)x4.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy2Idle(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy2Running(64x64)x4.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy3Idle(64x64)x2.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Enemy3Running(64x64)x4.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Fonts/SpaceFont.spritefont</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Health(64x64)x3.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/collect.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/complete.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/damage.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/death.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/game.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Sounds/laser-shot.wav</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/space_bg(64x64)x5.png</File>
-    <File>C:/Users/maxim/Desktop/game/Code/Content/Wall(64x64)x7.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/AstronautIdle(64x64)x9.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/AstronautRunning(64x64)x12.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Border(64x64)x11.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/CollectableForeground(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/CollectableForegroundGray(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/DeployableBackground(64x64)x3.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/DeployableForeground(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy1Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy1Running(64x64)x4.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy2Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy2Running(64x64)x4.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy3Idle(64x64)x2.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Enemy3Running(64x64)x4.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Fonts/SpaceFont.spritefont</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Health(64x64)x3.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/collect.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/complete.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/damage.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/death.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/game.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Sounds/laser-shot.wav</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/space_bg(64x64)x5.png</File>
+    <File>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/Wall(64x64)x7.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

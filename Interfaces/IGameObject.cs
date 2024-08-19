@@ -10,7 +10,7 @@ namespace Code.Interfaces
 {
     internal interface IGameObject
     {
-        void Update(GameTime gametime);
+        void Update(GameTime gameTime);
         void Draw(SpriteBatch _spriteBatch);
     }
 }

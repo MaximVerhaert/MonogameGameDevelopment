@@ -23,9 +23,9 @@ namespace Code
         private float jumpTimer = 0f;
 
         private float directionChangeTimer = 0f;
-        private float directionChangeInterval = 2f;
-        private Random random = new Random(); // Random number generator for level 2
-
+        private float directionChangeRange = 2f; // Range for direction change interval
+        private float directionChangeInterval;
+        private Random random = new Random();
 
         public Enemy(Texture2D idleTexture, Texture2D runningTexture, Vector2 startingPosition, List<TileMap> layers, ICollisionDetector collisionDetector, int level)
             : base(idleTexture, runningTexture, startingPosition, layers, collisionDetector)
@@ -33,6 +33,9 @@ namespace Code
             Level = level;
             SetState(level);
             SetMovementStrategy(level);
+
+            // Initialize directionChangeInterval with a random value within the specified range
+            directionChangeInterval = GetRandomDirectionChangeInterval();
         }
 
         private void SetState(int level)
@@ -93,8 +96,6 @@ namespace Code
             // Add collision detection for damage here
         }
 
-
-
         public void UpdateLevel1Behavior(GameTime gameTime)
         {
             directionChangeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -125,7 +126,7 @@ namespace Code
                 isFacingLeft = !isFacingLeft;
                 directionChangeTimer = 0f;
                 // Set new random interval between 1 and 3 seconds
-                directionChangeInterval = (float)(random.NextDouble() * 2 + 1);
+                directionChangeInterval = GetRandomDirectionChangeInterval();
             }
 
             // Move left or right based on direction
@@ -136,7 +137,6 @@ namespace Code
             {
                 velocity.Y += gravity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-
 
             position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
             position.Y += velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -154,24 +154,26 @@ namespace Code
 
         public void UpdateLevel3Behavior(GameTime gameTime)
         {
-            jumpTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            directionChangeTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (jumpTimer >= jumpInterval)
+            if (directionChangeTimer >= directionChangeInterval)
             {
-                Jump(gameTime);
-                jumpTimer = 0f;
+                isFacingLeft = !isFacingLeft;
+                directionChangeTimer = 0f;
+                directionChangeInterval = GetRandomDirectionChangeInterval();
             }
 
-            Move(gameTime);
-        }
+            // Move left or right based on direction
+            velocity.X = isFacingLeft ? -10 : 10;
 
-        private void Move(GameTime gameTime)
-        {
-            // Define direction based on whether the enemy is facing left or right
-            Vector2 direction = isFacingLeft ? new Vector2(-1, 0) : new Vector2(1, 0);
+            // Apply gravity
+            if (!isGrounded)
+            {
+                velocity.Y += gravity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
 
-            // Call the Move method with all required parameters
-            position = movementStrategy.Move(position, velocity, isGrounded, gameTime, direction, jumpStrength);
+            position.X += velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            position.Y += velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Update animation state
             if (velocity.X == 0 && isGrounded)
@@ -184,7 +186,11 @@ namespace Code
             }
         }
 
-
+        private float GetRandomDirectionChangeInterval()
+        {
+            // Generate a random float between 1 and 3
+            return (float)(random.NextDouble() * 4 + 1);
+        }
 
         private void Jump(GameTime gameTime)
         {
@@ -192,8 +198,7 @@ namespace Code
             {
                 velocity.Y = -jumpStrength;
                 isGrounded = false;
-                isFacingLeft = true;
-                SetAnimationState("Running", runningTexture);
+                // No need to change facing direction or animation here
             }
         }
 
@@ -215,4 +220,5 @@ namespace Code
             );
         }
     }
+
 }

@@ -45,14 +45,18 @@ namespace Code
         protected abstract List<AnimationFrame> CreateIdleAnimationFrames();
         protected abstract List<AnimationFrame> CreateRunningAnimationFrames();
 
-        
+
 
         public virtual void Update(GameTime gameTime)
         {
             animatie.Update(gameTime);
             CheckCollisionWithFloorLayer();
             CheckCollisionWithCeilingLayer();
+            CheckCollisionWithLeftSideLayer();
+            CheckCollisionWithRightSideLayer();
         }
+
+
 
         protected void CheckCollisionWithFloorLayer()
         {
@@ -100,6 +104,33 @@ namespace Code
                 }
             }
         }
+
+        protected void CheckCollisionWithLeftSideLayer()
+        {
+            Rectangle leftHitbox = new Rectangle(Hitbox.Left - 1, Hitbox.Top, 1, Hitbox.Height);
+            var collisionResult = _collisionDetector.CheckCollision(leftHitbox, layers, 3);
+
+            if (collisionResult.isColliding)
+            {
+                // Adjust position to be inside the wall
+                position.X = collisionResult.tileBounds.Right;
+                velocity.X = 0; // Stop horizontal movement
+            }
+        }
+
+        protected void CheckCollisionWithRightSideLayer()
+        {
+            Rectangle rightHitbox = new Rectangle(Hitbox.Right, Hitbox.Top, 1, Hitbox.Height);
+            var collisionResult = _collisionDetector.CheckCollision(rightHitbox, layers, 3);
+
+            if (collisionResult.isColliding)
+            {
+                // Adjust position to be inside the wall
+                position.X = collisionResult.tileBounds.Left - Hitbox.Width;
+                velocity.X = 0; // Stop horizontal movement
+            }
+        }
+
 
         protected void SetAnimationState(string animationName, Texture2D texture)
         {

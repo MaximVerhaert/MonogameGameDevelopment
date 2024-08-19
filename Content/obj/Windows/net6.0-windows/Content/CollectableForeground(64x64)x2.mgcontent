@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/maxim/Desktop/game/Code/Content/CollectableForeground(64x64)x2.png</SourceFile>
-  <SourceTime>2024-08-17T21:09:27.2757905+02:00</SourceTime>
-  <DestFile>C:/Users/maxim/Desktop/game/Code/Content/bin/Windows/Content/CollectableForeground(64x64)x2.xnb</DestFile>
-  <DestTime>2024-08-17T21:15:18.9207121+02:00</DestTime>
+  <SourceFile>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/CollectableForeground(64x64)x2.png</SourceFile>
+  <SourceTime>2024-08-19T15:38:53.8503436+02:00</SourceTime>
+  <DestFile>C:/Users/maxim/Desktop/game/MonogameGameDevelopment/Content/bin/Windows/Content/CollectableForeground(64x64)x2.xnb</DestFile>
+  <DestTime>2024-08-19T15:39:51.5613001+02:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2022-07-26T13:44:56+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

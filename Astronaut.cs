@@ -129,7 +129,10 @@ namespace Code
             animatie.Update(gameTime);
             CheckCollisionWithFloorLayer(layers);
             CheckCollisionWithCeilingLayer(layers);
+            CheckCollisionWithLeftSideLayer();
+            CheckCollisionWithRightSideLayer();
         }
+
 
         public void SetState(IAstronautState newState)
         {
@@ -184,6 +187,33 @@ namespace Code
                 isFacingLeft = direction.X < 0;
             }
         }
+
+        private void CheckCollisionWithLeftSideLayer()
+        {
+            Rectangle leftHitbox = new Rectangle(Hitbox.Left - 1, Hitbox.Top, 1, Hitbox.Height);
+            var collisionResult = _collisionDetector.CheckCollision(leftHitbox, layers, 3);
+
+            if (collisionResult.isColliding)
+            {
+                // Adjust position to be inside the wall
+                position.X = collisionResult.tileBounds.Right;
+                velocity.X = 0; // Stop horizontal movement
+            }
+        }
+
+        private void CheckCollisionWithRightSideLayer()
+        {
+            Rectangle rightHitbox = new Rectangle(Hitbox.Right, Hitbox.Top, 1, Hitbox.Height);
+            var collisionResult = _collisionDetector.CheckCollision(rightHitbox, layers, 3);
+
+            if (collisionResult.isColliding)
+            {
+                // Adjust position to be inside the wall
+                position.X = collisionResult.tileBounds.Left - Hitbox.Width;
+                velocity.X = 0; // Stop horizontal movement
+            }
+        }
+
 
         private void CheckCollisionWithFloorLayer(List<TileMap> layers)
         {

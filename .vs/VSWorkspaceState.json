@@ -4,10 +4,12 @@
     "\\Animation",
     "\\Collision",
     "\\Data",
+    "\\Input",
+    "\\Interfaces",
     "\\Map",
     "\\State",
     "\\Strategy"
   ],
-  "SelectedNode": "\\Enemy.cs",
+  "SelectedNode": "\\Interfaces\\IGameObject.cs",
   "PreviewInSolutionExplorer": false
 }
