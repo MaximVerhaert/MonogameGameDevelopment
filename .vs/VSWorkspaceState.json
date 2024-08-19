@@ -1,15 +1,7 @@
 {
   "ExpandedNodes": [
-    "",
-    "\\Animation",
-    "\\Collision",
-    "\\Data",
-    "\\Input",
-    "\\Interfaces",
-    "\\Map",
-    "\\State",
-    "\\Strategy"
+    ""
   ],
-  "SelectedNode": "\\Interfaces\\IGameObject.cs",
+  "SelectedNode": "\\Game1.cs",
   "PreviewInSolutionExplorer": false
 }
