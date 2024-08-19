@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Character",
+    "\\Data"
   ],
-  "SelectedNode": "\\Game1.cs",
+  "SelectedNode": "\\Data\\map.csv",
   "PreviewInSolutionExplorer": false
 }

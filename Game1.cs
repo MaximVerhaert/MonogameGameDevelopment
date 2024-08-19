@@ -411,12 +411,10 @@ namespace Code
                     {
                         foreach (var enemy in enemies)
                         {
-                            enemy.Draw(_spriteBatch);
-                            DrawingHelper.DrawRectangleBorder(_spriteBatch, enemy.Hitbox, Color.Red, 2, GraphicsDevice);
-                        }
+                            enemy.Draw(_spriteBatch);                        }
                     }
 
-                    DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
+                    //DrawingHelper.DrawRectangleBorder(_spriteBatch, astronaut.Hitbox, Color.Red, 2, GraphicsDevice);
 
                     foreach (var coinPos in _collectedCoinPositions)
                     {
