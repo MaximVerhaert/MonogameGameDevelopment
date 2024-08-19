@@ -7,7 +7,7 @@ using Code.State;
 using Code.Strategy;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Code;
+using Code;
 using System;
 
 namespace Code

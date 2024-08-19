@@ -4,9 +4,10 @@
     "\\Animation",
     "\\Collision",
     "\\Data",
+    "\\Map",
     "\\State",
     "\\Strategy"
   ],
-  "SelectedNode": "\\State\\NormalState.cs",
+  "SelectedNode": "\\Game1.cs",
   "PreviewInSolutionExplorer": false
 }

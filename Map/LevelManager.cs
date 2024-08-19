@@ -1,4 +1,4 @@
-﻿using Code.Code;
+﻿using Code;
 using Code.Interfaces;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

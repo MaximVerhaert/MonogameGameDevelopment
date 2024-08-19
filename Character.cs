@@ -5,7 +5,7 @@ using Code.Input;
 using Code.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Code;
+using Code;
 using System;
 
 namespace Code
@@ -110,7 +110,7 @@ namespace Code
         public virtual void Draw(SpriteBatch spriteBatch)
         {
         }
-        public Rectangle Hitbox
+        public virtual Rectangle Hitbox
         {
             get
             {

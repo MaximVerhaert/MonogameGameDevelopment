@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Code.Animation;
 using Code.Input;
 using Code.Interfaces;
+using Code.Strategy;
+using Code.State;
 using System.Collections.Generic;
 using System.Linq;
-using Code.Code;
-using System;
 
 namespace Code
 {
@@ -15,7 +15,6 @@ namespace Code
         public Vector2 Position => position;
         private Rectangle idleHitbox = new Rectangle(4, 0, 21, 32);
         private Rectangle runningHitbox = new Rectangle(6, 0, 24, 32);
-
 
         public Rectangle Hitbox
         {
@@ -54,6 +53,8 @@ namespace Code
         private Vector2 position;
         private IMovementController movementController;
         private IInputReader inputReader;
+        private IAstronautState currentState;
+        private IMovementStrategy movementStrategy;
         private bool isFacingLeft = false;
         private Vector2 velocity;
         private float gravity = 9.8f;
@@ -72,13 +73,11 @@ namespace Code
 
         private ICollisionDetector _collisionDetector;
 
-
         public Astronaut(Texture2D idleTexture, Texture2D runningTexture, IInputReader reader, IMovementController movementController, List<TileMap> layers, ICollisionDetector collisionDetector, Vector2 startingPosition)
         {
             this.idleTexture = idleTexture;
             this.runningTexture = runningTexture;
             this.position = startingPosition; // Set the initial position
-
 
             animatie = new Animatie();
 
@@ -117,58 +116,39 @@ namespace Code
             this.movementController = movementController;
             this.inputReader = reader;
             this.layers = layers ?? new List<TileMap>();
+            this._collisionDetector = collisionDetector;
 
-
-            _collisionDetector = collisionDetector;
-
+            // Set default state and movement strategy
+            SetState(new NormalState());
+            SetMovementStrategy(new RunningAndJumpingMovement());
         }
 
         public void Update(GameTime gameTime)
         {
-            Move(gameTime);
+            currentState.Update(this, gameTime);
             animatie.Update(gameTime);
             CheckCollisionWithFloorLayer(layers);
             CheckCollisionWithCeilingLayer(layers);
         }
 
-        private Point GetStandingTilePosition()
+        public void SetState(IAstronautState newState)
         {
-            // Assume each tile is 64x64 pixels, adjust if different
-            int tileX = (int)position.X / 64;
-            int tileY = (int)(position.Y + Hitbox.Height) / 64; // Bottom of the character
-            return new Point(tileX, tileY);
+            currentState = newState;
+        }
+
+        public void SetMovementStrategy(IMovementStrategy newStrategy)
+        {
+            movementStrategy = newStrategy;
         }
 
         public void Move(GameTime gameTime)
         {
             var direction = inputReader.ReadInput();
 
-            // Horizontal movement
-            velocity.X = movementController.UpdateMovement(direction, gameTime).X;
+            // Use movement strategy to update position and velocity
+            position = movementStrategy.Move(position, velocity, isGrounded, gameTime, direction, jumpStrength);
 
-            // If the character moves horizontally, check and update the standing tile
-            if (velocity.X != 0)
-            {
-                var newStandingTile = GetStandingTilePosition();
-                var currentLayer = layers.FirstOrDefault(l => l.ZIndex == 3); // Assuming floor layer ZIndex is 3
-
-                // Check if the new standing tile is different from the current one
-                if (currentStandingTiles.Count == 0 || currentStandingTiles[0].TilePosition != newStandingTile)
-                {
-                    // Call the method when the tile changes
-                    isGrounded = false;  // Reset grounded state on tile change
-                    velocity.Y = gravity; // Apply gravity initially
-
-                    // Update the current standing tile
-                    currentStandingTiles.Clear(); // Clear previous standing tiles
-                    currentStandingTiles.Add((currentLayer, newStandingTile));
-                }
-            }
-
-            // Apply gravity to vertical velocity only if not grounded
-            position.X += velocity.X;
-
-            //Jumping logic
+            // Handle jumping logic
             if (isGrounded && direction.Y < 0 && !isJumping) // Jump on up input
             {
                 isJumping = true;
@@ -187,8 +167,11 @@ namespace Code
                 }
             }
 
-            // Apply velocity to position
-            position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            // Apply gravity if not grounded
+            if (!isGrounded)
+            {
+                velocity.Y += gravity;
+            }
 
             // Update animation state
             if (direction == Vector2.Zero && isGrounded)
@@ -200,12 +183,7 @@ namespace Code
                 SetAnimationState("Running", runningTexture);
                 isFacingLeft = direction.X < 0;
             }
-            else
-            {
-                velocity.Y += gravity;
-            }
         }
-
 
         private void CheckCollisionWithFloorLayer(List<TileMap> layers)
         {
@@ -235,7 +213,6 @@ namespace Code
             }
         }
 
-
         private void CheckCollisionWithCeilingLayer(List<TileMap> layers)
         {
             Rectangle topHitbox = new Rectangle(Hitbox.X, Hitbox.Top, Hitbox.Width, 1);
@@ -256,9 +233,6 @@ namespace Code
             }
         }
 
-
-
-
         private void SetAnimationState(string animationName, Texture2D texture)
         {
             animatie.Play(animationName);
@@ -267,7 +241,7 @@ namespace Code
 
         public void Draw(SpriteBatch _spriteBatch)
         {
-            //verticaal sprite sheet flippen om richting aan te geven
+            // Flip sprite horizontally to indicate facing direction
             SpriteEffects spriteEffect = isFacingLeft ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
             _spriteBatch.Draw(
