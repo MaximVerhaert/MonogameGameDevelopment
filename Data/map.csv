@@ -100,7 +100,7 @@ CollectableHealth, 8, CollectableForeground(64x64)x2
 
 StartingPosition,128,288
 
-Enemy:(1;384;320),(3;832;448)
+Enemy:(1;384;288),(3;832;416)
 
 
 lvl2:
@@ -204,4 +204,4 @@ CollectableHealth, 8, CollectableForeground(64x64)x2
 
 StartingPosition,192,288
 
-Enemy:(1;384;320),(2;768;448),(3;832;448)
+Enemy:(1;384;288),(2;768;416),(3;832;416)

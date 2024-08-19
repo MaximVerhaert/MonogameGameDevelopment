@@ -1,14 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Animation",
     "\\Collision",
-    "\\Content",
     "\\Content\\Fonts",
     "\\Content\\Sounds",
-    "\\Data",
-    "\\Interfaces",
-    "\\MainMenu",
-    "\\Map"
+    "\\Data"
   ],
+  "SelectedNode": "\\Data\\map.csv",
   "PreviewInSolutionExplorer": false
 }
