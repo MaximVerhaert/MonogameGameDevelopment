@@ -90,7 +90,10 @@ namespace Code
         public override void Update(GameTime gameTime)
         {
             currentState.Update(this, gameTime);
+            // Add collision detection for damage here
         }
+
+
 
         public void UpdateLevel1Behavior(GameTime gameTime)
         {

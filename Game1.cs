@@ -294,13 +294,23 @@ namespace Code
                 {
                     if (_collisionDetector.CheckCollision(astronaut.Hitbox, enemy.Hitbox))
                     {
-                        _health -= enemy.Level; // Reduce health based on enemy level
+                        // Reduce health based on enemy level
+                        _health -= enemy.Level;
+
+                        // Update the last collision time
                         _lastEnemyCollisionTime = gameTime.TotalGameTime.TotalMilliseconds;
+
+                        // Play damage sound effect
                         damageEffect.Play(volume: soundEffectVolume, pitch: 0f, pan: 0f);
-                        break; // Exit the loop after the first collision is detected
+
+                        // Optional: Handle any additional logic here if needed
+
+                        // If you want to handle only the first collision per update, break the loop
+                        break;
                     }
                 }
             }
+
 
             // Check for collision with DeployableFinish layer (layer 6)
             var (isCollidingWithFinish, finishTileBounds, portal_pos) = _collisionDetector.CheckCollision(astronaut.Hitbox, _levelManager.Layers, 6);
